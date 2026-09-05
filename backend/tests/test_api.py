@@ -9,13 +9,13 @@ def client(tmp_path,monkeypatch):
     return TestClient(app)
 
 def snapshot():
-    return dict(schemaVersion=1,configVersion=1,runId='test-run',seed=1,rng=1,nextEntityId=1,revision=0,tick=0,gold=300,coreHp=3000,maxThreat=1,kills=0,bossKills=0,alive=True,buildings=[],enemies=[],shots=[],spawnCredit=0,bossRequests=0,bossWarning=-1,bossCount=0,lastBossDeath=-999,nextBoss=300,nextPerk=120,passive=0,perks={},perkQueue=0,candidates=[],dropCooldown=0,commands=[])
+    return dict(balanceRevision=2,schemaVersion=1,configVersion=1,runId='test-run',seed=1,rng=1,nextEntityId=1,revision=0,tick=0,gold=300,coreHp=3000,maxThreat=1,kills=0,bossKills=0,alive=True,buildings=[],enemies=[],shots=[],spawnCredit=0,bossRequests=0,bossWarning=-1,bossCount=0,lastBossDeath=-999,nextBoss=300,nextPerk=120,passive=0,perks={},perkQueue=0,candidates=[],dropCooldown=0,commands=[])
 
 def test_config_and_health(client):
     assert client.get('/api/v1/health').json()['status']=='ok'
     c=client.get('/api/v1/config').json()
-    assert len(c['buildings'])==8 and len(c['enemies'])==8
-    assert c['buildings']['wall']['hp']==650
+    assert len(c['buildings'])==11 and len(c['enemies'])==13
+    assert c['buildings']['wall']['hp']==720
 
 def test_save_revision_and_restart(client):
     empty=client.get('/api/v1/save')
@@ -44,6 +44,67 @@ def test_settings(client):
     assert TestClient(app).get('/api/v1/settings').json()==s
     s['sfxVolume']=2
     assert client.put('/api/v1/settings',json=s).status_code==422
+
+def test_bridge_and_cannon_persistence(client):
+    s=snapshot()
+    s['buildings']=[dict(id=1,type='bridge',branch=-1,spent=35,x=3.5,y=1.5,v=0,hp=300,settled=True,fallId=1,hit=[],cooldown=0)]
+    s['shots']=[dict(id=2,owner=1,kind='cannon',originX=3.5,originY=2.5,x=8,y=.5,remaining=.2,duration=.25,damage=90,radius=1.5)]
+    s['nextEntityId']=3
+    assert client.put('/api/v1/save',json={'expectedRevision':0,'snapshot':s}).status_code==200
+    loaded=client.get('/api/v1/save').json()['snapshot']
+    assert loaded['buildings'][0]['y']==1.5 and loaded['shots'][0]['kind']=='cannon'
+    s['commands']=[dict(type='drop',kind='bridge',column=4,layer=30)]
+    assert client.put('/api/v1/save',json={'expectedRevision':1,'snapshot':s}).status_code==422
+
+def test_arrow_persistence(client):
+    s=snapshot()
+    s['shots']=[dict(id=1,owner=99,kind='arrow',phase='flight',originX=10.98,originY=.5,x=16,y=.5,remaining=.15,duration=.23,damage=28,radius=0)]
+    s['nextEntityId']=100
+    assert client.put('/api/v1/save',json={'expectedRevision':0,'snapshot':s}).status_code==200
+    loaded=client.get('/api/v1/save').json()['snapshot']['shots'][0]
+    assert loaded['kind']=='arrow' and loaded['remaining']==.15
+
+def test_difficulty_and_bullet_persistence(client):
+    s=snapshot();s['difficulty']='hard'
+    s['shots']=[dict(id=1,owner=99,kind='bullet',phase='flight',originX=5,originY=1,x=20,y=.5,remaining=.2,duration=.4,damage=200,radius=0)]
+    s['nextEntityId']=2
+    assert client.put('/api/v1/save',json={'expectedRevision':0,'snapshot':s}).status_code==200
+    loaded=client.get('/api/v1/save').json()['snapshot']
+    assert loaded['difficulty']=='hard' and loaded['shots'][0]['kind']=='bullet'
+    s['difficulty']='impossible'
+    assert client.put('/api/v1/save',json={'expectedRevision':1,'snapshot':s}).status_code==422
+
+def test_legacy_balance_migrates_once_and_keeps_spending(client):
+    s=snapshot();s.pop('balanceRevision')
+    s['buildings']=[dict(id=1,type='mine',branch=1,spent=200,x=5.5,y=.5,v=0,hp=300,settled=True,fallId=1,hit=[],cooldown=2)]
+    s['nextEntityId']=2
+    assert client.put('/api/v1/save',json={'expectedRevision':0,'snapshot':s}).status_code==200
+    loaded=client.get('/api/v1/save').json()['snapshot']
+    assert loaded['balanceRevision']==2 and loaded['buildings'][0]['hp']==225
+    assert loaded['buildings'][0]['spent']==200
+    assert client.put('/api/v1/save',json={'expectedRevision':1,'snapshot':loaded}).status_code==200
+    assert client.get('/api/v1/save').json()['snapshot']['buildings'][0]['hp']==225
+
+def test_incident_and_airdrop_persistence(client):
+    s=snapshot()
+    s.update(nextEvent=260,eventCount=2,eventDebt=3,event=dict(kind='missiles',remaining=4,columns=[1,5,9]))
+    s['enemies']=[dict(id=1,type='reflector',x=16,y=8,hp=220,maxHp=220,shield=80,armor=0,attackScale=1,speedScale=1,reward=24,elite='',cooldown=0,slows=[],skill=5,summon=15,state='walk',timer=0,distance=0,target=0,descent=True)]
+    s['nextEntityId']=2
+    assert client.put('/api/v1/save',json={'expectedRevision':0,'snapshot':s}).status_code==200
+    saved=client.get('/api/v1/save').json()['snapshot']
+    assert saved['event']==s['event'] and saved['eventDebt']==3
+    assert saved['enemies'][0]['descent'] and saved['enemies'][0]['shield']==80
+    s['event']['columns']=[24]
+    assert client.put('/api/v1/save',json={'expectedRevision':1,'snapshot':s}).status_code==422
+
+def test_physical_bomb_and_skill_warning_persistence(client):
+    s=snapshot()
+    s['shots']=[dict(id=1,owner=99,kind='bomb',phase='flight',visual='missile',originX=18,originY=10.65,x=2.5,y=0,remaining=.5,duration=.9,damage=65,radius=.8),dict(id=2,owner=99,kind='shockwave',phase='warning',originX=8,originY=1,x=8,y=.3,remaining=1,duration=1.4,damage=100,radius=3)]
+    s['nextEntityId']=100
+    assert client.put('/api/v1/save',json={'expectedRevision':0,'snapshot':s}).status_code==200
+    loaded=client.get('/api/v1/save').json()['snapshot']['shots']
+    assert loaded[0]['phase']=='flight' and loaded[0]['originY']==10.65
+    assert loaded[1]['kind']=='shockwave' and loaded[1]['remaining']==1
 
 def test_runs_idempotent_only_clear_matching(client):
     client.put('/api/v1/save',json={'expectedRevision':0,'snapshot':snapshot()})

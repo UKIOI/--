@@ -147,6 +147,20 @@ export interface components {
         };
         /** Enemy */
         Enemy: {
+            /**
+             * Descent
+             * @default false
+             */
+            descent: boolean;
+            /** Special */
+            special?: number | null;
+            /** Secondary */
+            secondary?: number | null;
+            /**
+             * Attackanim
+             * @default 0
+             */
+            attackAnim: number;
             /** Id */
             id: number;
             /** Type */
@@ -186,7 +200,7 @@ export interface components {
              * State
              * @enum {string}
              */
-            state: "walk" | "charge" | "dash" | "fuse";
+            state: "walk" | "charge" | "dash" | "fuse" | "leap" | "recover";
             /** Timer */
             timer: number;
             /** Distance */
@@ -196,6 +210,11 @@ export interface components {
         };
         /** GameConfig */
         GameConfig: {
+            /**
+             * Balancerevision
+             * @default 1
+             */
+            balanceRevision: number;
             /**
              * Configversion
              * @constant
@@ -230,6 +249,18 @@ export interface components {
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /** Incident */
+        Incident: {
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "missiles" | "airdrop";
+            /** Remaining */
+            remaining: number;
+            /** Columns */
+            columns: number[];
         };
         /** Run */
         Run: {
@@ -316,6 +347,14 @@ export interface components {
         };
         /** Shot */
         Shot: {
+            /** Phase */
+            phase?: ("warning" | "flight") | null;
+            /** Visual */
+            visual?: string | null;
+            /** Originx */
+            originX?: number | null;
+            /** Originy */
+            originY?: number | null;
             /** Id */
             id: number;
             /** Owner */
@@ -324,7 +363,7 @@ export interface components {
              * Kind
              * @enum {string}
              */
-            kind: "mortar" | "bomb";
+            kind: "mortar" | "bomb" | "cannon" | "arrow" | "bullet" | "rock" | "shockwave" | "laser";
             /** X */
             x: number;
             /** Y */
@@ -347,6 +386,30 @@ export interface components {
         };
         /** Snapshot */
         Snapshot: {
+            /**
+             * Balancerevision
+             * @default 1
+             */
+            balanceRevision: number;
+            /**
+             * Difficulty
+             * @default easy
+             * @enum {string}
+             */
+            difficulty: "easy" | "normal" | "hard";
+            /** Nextevent */
+            nextEvent?: number | null;
+            /**
+             * Eventcount
+             * @default 0
+             */
+            eventCount: number;
+            /**
+             * Eventdebt
+             * @default 0
+             */
+            eventDebt: number;
+            event?: components["schemas"]["Incident"] | null;
             /** Schemaversion */
             schemaVersion: number;
             /** Configversion */

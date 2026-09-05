@@ -9,18 +9,18 @@
   },
   {
     "layout": "strategy-1",
-    "seconds": 317.4,
+    "seconds": 315.76666666666665,
     "bossSeen": true,
     "alive": false,
-    "kills": 105,
-    "gold": 32
+    "kills": 99,
+    "gold": 38
   },
   {
     "layout": "strategy-2",
-    "seconds": 323.51666666666665,
+    "seconds": 301.1166666666667,
     "bossSeen": true,
     "alive": false,
-    "kills": 108,
-    "gold": 39
+    "kills": 92,
+    "gold": 19
   }
 ]

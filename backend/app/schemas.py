@@ -19,6 +19,7 @@ class BuildingConfig(BaseModel):
     branches: list[dict[str, Any]] = Field(min_length=2, max_length=2)
 
 class GameConfig(BaseModel):
+    balanceRevision: int = Field(1, ge=1, le=2)
     configVersion: Literal[1]
     world: dict[str, float]
     buildings: dict[str, BuildingConfig]
@@ -45,6 +46,10 @@ class Slow(BaseModel):
     until: Finite = Field(ge=0)
 
 class Enemy(BaseModel):
+    descent: bool = False
+    special: Finite | None = None
+    secondary: Finite | None = None
+    attackAnim: Finite = Field(0, ge=0, le=1)
     id: int = Field(gt=0)
     type: str
     x: Finite = Field(ge=0, le=40)
@@ -61,15 +66,19 @@ class Enemy(BaseModel):
     slows: list[Slow]
     skill: Finite
     summon: Finite
-    state: Literal['walk', 'charge', 'dash', 'fuse']
+    state: Literal['walk', 'charge', 'dash', 'fuse', 'leap', 'recover']
     timer: Finite
     distance: Finite
     target: int
 
 class Shot(BaseModel):
+    phase: Literal['warning', 'flight'] | None = None
+    visual: str | None = None
+    originX: Finite | None = None
+    originY: Finite | None = None
     id: int = Field(gt=0)
     owner: int = Field(gt=0)
-    kind: Literal['mortar', 'bomb']
+    kind: Literal['mortar', 'bomb', 'cannon', 'arrow', 'bullet', 'rock', 'shockwave', 'laser']
     x: Finite
     y: Finite
     remaining: Finite = Field(gt=0)
@@ -77,7 +86,18 @@ class Shot(BaseModel):
     damage: Finite = Field(ge=0)
     radius: Finite = Field(ge=0)
 
+class Incident(BaseModel):
+    kind: Literal['missiles', 'airdrop']
+    remaining: Finite = Field(gt=0, le=6)
+    columns: list[Annotated[int, Field(ge=0, le=23)]] = Field(max_length=3)
+
 class Snapshot(BaseModel):
+    balanceRevision: int = Field(1, ge=1, le=2)
+    difficulty: Literal['easy', 'normal', 'hard'] = 'easy'
+    nextEvent: Finite | None = None
+    eventCount: int = Field(0, ge=0)
+    eventDebt: int = Field(0, ge=0)
+    event: Incident | None = None
     schemaVersion: int
     configVersion: int
     runId: str = Field(min_length=1, max_length=100, pattern=r'^[a-zA-Z0-9_-]+$')
@@ -112,6 +132,8 @@ class Snapshot(BaseModel):
     @model_validator(mode='after')
     def references(self):
         from .config import config
+        from .balance import migrate
+        migrate(self,config)
         ids=[x.id for x in [*self.buildings,*self.enemies,*self.shots]]
         if len(ids)!=len(set(ids)) or any(i>=self.nextEntityId for i in ids):
             raise ValueError('实体 ID 重复或 nextEntityId 非法')
@@ -142,6 +164,11 @@ class Snapshot(BaseModel):
             if c.get('type')=='drop':
                 if c.get('kind') not in config['buildings'] or not isinstance(c.get('column'),int) or not 0<=c['column']<24:
                     raise ValueError('投放命令非法')
+                if c.get('kind')=='bridge' and (not isinstance(c.get('layer'),int) or not 0<=c['layer']<12):
+                    raise ValueError('桥梁层数非法')
+            elif c.get('type')=='upgradeMany':
+                if c.get('branch') not in [0,1] or not isinstance(c.get('ids'),list) or len(c['ids'])>312 or any(i not in [b.id for b in self.buildings] for i in c['ids']):
+                    raise ValueError('批量升级引用非法')
             elif c.get('type')=='upgrade':
                 if c.get('branch') not in [0,1] or c.get('id') not in [b.id for b in self.buildings]:
                     raise ValueError('升级引用非法')

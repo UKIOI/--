@@ -16,8 +16,8 @@
     "wall": {
       "name": "城墙",
       "icon": "▥",
-      "cost": 40,
-      "hp": 650,
+      "cost": 45,
+      "hp": 720,
       "impact": 100,
       "damage": 0,
       "interval": 0,
@@ -30,29 +30,29 @@
       "slowDuration": 2,
       "boost": 0.2,
       "thorns": 0,
-      "upgradeCost": 60,
+      "upgradeCost": 65,
       "branches": [
         {
           "name": "加固墙",
-          "hp": 1300
+          "hp": 1450
         },
         {
           "name": "尖刺墙",
-          "hp": 850,
-          "thorns": 15
+          "hp": 1000,
+          "thorns": 18
         }
       ]
     },
     "ballista": {
       "name": "弩炮",
       "icon": "➶",
-      "cost": 70,
-      "hp": 220,
+      "cost": 65,
+      "hp": 240,
       "impact": 35,
-      "damage": 24,
-      "interval": 0.8,
-      "range": 7,
-      "description": "直射地面 · 注意友方遮挡",
+      "damage": 28,
+      "interval": 0.85,
+      "range": 8,
+      "description": "低成本持续单体火力 · 困难模式城墙遮挡",
       "minRange": 0,
       "radius": 1.3,
       "production": 10,
@@ -60,60 +60,63 @@
       "slowDuration": 2,
       "boost": 0.2,
       "thorns": 0,
-      "upgradeCost": 100,
+      "upgradeCost": 95,
       "branches": [
         {
           "name": "重弩",
-          "damage": 55,
-          "interval": 1.2,
-          "range": 9
+          "damage": 64,
+          "interval": 1.3,
+          "range": 10
         },
         {
           "name": "连弩",
-          "damage": 18,
-          "interval": 0.3
+          "damage": 17,
+          "interval": 0.38,
+          "hp": 260
         }
       ]
     },
     "mortar": {
       "name": "迫击炮",
       "icon": "◒",
-      "cost": 120,
-      "hp": 180,
+      "cost": 140,
+      "hp": 210,
       "impact": 45,
-      "damage": 65,
-      "interval": 2.8,
-      "range": 11,
+      "damage": 72,
+      "interval": 3,
+      "range": 12,
       "description": "抛射对地 · 范围爆炸",
-      "minRange": 3,
-      "radius": 1.3,
+      "minRange": 3.5,
+      "radius": 1.2,
       "production": 10,
       "slow": 0.35,
       "slowDuration": 2,
       "boost": 0.2,
       "thorns": 0,
-      "upgradeCost": 150,
+      "upgradeCost": 160,
       "branches": [
         {
           "name": "重炮",
-          "damage": 120,
-          "radius": 1.8
+          "damage": 125,
+          "interval": 3.4,
+          "radius": 1.75
         },
         {
           "name": "速射炮",
-          "interval": 1.5
+          "damage": 65,
+          "interval": 1.9
         }
       ]
     },
     "anti_air": {
       "name": "防空塔",
       "icon": "⌁",
-      "cost": 90,
-      "hp": 200,
+      "cost": 85,
+      "hp": 220,
       "impact": 35,
-      "damage": 22,
-      "interval": 0.55,
-      "range": 9,
+      "damage": 24,
+      "interval": 0.6,
+      "range": 10,
       "description": "专注空中目标",
       "minRange": 0,
       "radius": 1.3,
@@ -122,24 +125,26 @@
       "slowDuration": 2,
       "boost": 0.2,
       "thorns": 0,
-      "upgradeCost": 110,
+      "upgradeCost": 115,
       "branches": [
         {
           "name": "重型防空",
-          "damage": 44,
-          "interval": 0.7
+          "damage": 50,
+          "interval": 0.85,
+          "range": 10.5
         },
         {
           "name": "广域防空",
-          "range": 13
+          "damage": 28,
+          "range": 14
         }
       ]
     },
     "mine": {
       "name": "矿场",
       "icon": "◇",
-      "cost": 80,
-      "hp": 160,
+      "cost": 85,
+      "hp": 200,
       "impact": 20,
       "damage": 0,
       "interval": 10,
@@ -156,55 +161,26 @@
       "branches": [
         {
           "name": "深井矿",
-          "production": 18
+          "production": 22,
+          "hp": 220
         },
         {
           "name": "加固矿",
-          "hp": 600,
-          "production": 13
+          "hp": 450,
+          "production": 16
         }
       ]
     },
     "repair": {
       "name": "维修站",
       "icon": "✚",
-      "cost": 100,
-      "hp": 200,
+      "cost": 95,
+      "hp": 220,
       "impact": 25,
       "damage": 20,
       "interval": 1,
-      "range": 2.5,
+      "range": 3,
       "description": "修复范围内受损友方",
-      "minRange": 0,
-      "radius": 1.3,
-      "production": 10,
-      "slow": 0.35,
-      "slowDuration": 2,
-      "boost": 0.2,
-      "thorns": 0,
-      "upgradeCost": 130,
-      "branches": [
-        {
-          "name": "强效维修",
-          "damage": 40
-        },
-        {
-          "name": "广域维修",
-          "range": 4,
-          "damage": 25
-        }
-      ]
-    },
-    "frost": {
-      "name": "冰霜塔",
-      "icon": "❄",
-      "cost": 90,
-      "hp": 200,
-      "impact": 30,
-      "damage": 5,
-      "interval": 1.5,
-      "range": 4,
-      "description": "范围寒冷与减速",
       "minRange": 0,
       "radius": 1.3,
       "production": 10,
@@ -215,27 +191,90 @@
       "upgradeCost": 120,
       "branches": [
         {
+          "name": "强效维修",
+          "damage": 36,
+          "hp": 260
+        },
+        {
+          "name": "广域维修",
+          "range": 4.5,
+          "damage": 24
+        }
+      ]
+    },
+    "frost": {
+      "name": "冰霜塔",
+      "icon": "❄",
+      "cost": 95,
+      "hp": 210,
+      "impact": 30,
+      "damage": 6,
+      "interval": 1.6,
+      "range": 4.5,
+      "description": "范围寒冷与减速",
+      "minRange": 0,
+      "radius": 1.3,
+      "production": 10,
+      "slow": 0.3,
+      "slowDuration": 1.8,
+      "boost": 0.2,
+      "thorns": 0,
+      "upgradeCost": 120,
+      "branches": [
+        {
           "name": "极寒",
-          "slow": 0.5,
-          "slowDuration": 2.5
+          "damage": 8,
+          "slow": 0.48,
+          "slowDuration": 2.4
         },
         {
           "name": "冰环",
-          "range": 6,
-          "damage": 12
+          "range": 6.5,
+          "damage": 14
         }
       ]
     },
     "amplifier": {
       "name": "增幅器",
       "icon": "◎",
-      "cost": 130,
-      "hp": 180,
+      "cost": 120,
+      "hp": 220,
       "impact": 25,
       "damage": 0,
       "interval": 0,
-      "range": 2.5,
+      "range": 3,
       "description": "提升附近武器伤害",
+      "minRange": 0,
+      "radius": 1.3,
+      "production": 10,
+      "slow": 0.35,
+      "slowDuration": 2,
+      "boost": 0.18,
+      "thorns": 0,
+      "upgradeCost": 150,
+      "branches": [
+        {
+          "name": "强效增幅",
+          "boost": 0.32,
+          "hp": 260
+        },
+        {
+          "name": "广域增幅",
+          "range": 4.5,
+          "boost": 0.22
+        }
+      ]
+    },
+    "bridge": {
+      "name": "桥梁",
+      "icon": "═",
+      "cost": 35,
+      "hp": 300,
+      "impact": 40,
+      "damage": 0,
+      "interval": 0,
+      "range": 0,
+      "description": "点击指定高度铺设桥段 · 水平连接支撑 · 可承载上层",
       "minRange": 0,
       "radius": 1.3,
       "production": 10,
@@ -243,15 +282,82 @@
       "slowDuration": 2,
       "boost": 0.2,
       "thorns": 0,
-      "upgradeCost": 160,
+      "upgradeCost": 65,
       "branches": [
         {
-          "name": "强效增幅",
-          "boost": 0.35
+          "name": "钢桁桥",
+          "hp": 700
         },
         {
-          "name": "广域增幅",
-          "range": 4
+          "name": "堡垒桥",
+          "hp": 460,
+          "thorns": 16
+        }
+      ]
+    },
+    "cannon": {
+      "name": "加农炮",
+      "icon": "◉",
+      "cost": 160,
+      "hp": 280,
+      "impact": 55,
+      "damage": 78,
+      "interval": 2.3,
+      "range": 9.5,
+      "description": "中距离小范围爆炸 · 困难模式城墙遮挡",
+      "minRange": 0,
+      "radius": 1.1,
+      "production": 10,
+      "slow": 0.35,
+      "slowDuration": 2,
+      "boost": 0.2,
+      "thorns": 0,
+      "upgradeCost": 180,
+      "branches": [
+        {
+          "name": "重型加农",
+          "damage": 132,
+          "interval": 2.8,
+          "radius": 1.5
+        },
+        {
+          "name": "速射加农",
+          "damage": 62,
+          "interval": 1.45,
+          "radius": 1.05
+        }
+      ]
+    },
+    "sniper": {
+      "name": "狙击塔",
+      "icon": "⌖",
+      "cost": 190,
+      "hp": 190,
+      "impact": 30,
+      "damage": 165,
+      "interval": 3.8,
+      "range": 22,
+      "description": "超远单体狙击 · 子弹穿透友方建筑 · 高价值目标杀手",
+      "minRange": 0,
+      "radius": 0,
+      "production": 10,
+      "slow": 0.35,
+      "slowDuration": 2,
+      "boost": 0.2,
+      "thorns": 0,
+      "upgradeCost": 200,
+      "branches": [
+        {
+          "name": "重型狙击",
+          "damage": 300,
+          "interval": 4.8,
+          "range": 24
+        },
+        {
+          "name": "鹰眼狙击",
+          "damage": 155,
+          "interval": 2.9,
+          "range": 29
         }
       ]
     }
@@ -259,11 +365,11 @@
   "enemies": {
     "grunt": {
       "name": "普通怪",
-      "hp": 60,
+      "hp": 70,
       "speed": 0.7,
-      "damage": 12,
-      "interval": 1,
-      "reward": 4,
+      "damage": 13,
+      "interval": 1.15,
+      "reward": 5,
       "unlock": 0,
       "weight": 45,
       "air": false,
@@ -274,11 +380,11 @@
     },
     "runner": {
       "name": "疾跑怪",
-      "hp": 40,
-      "speed": 1.45,
-      "damage": 8,
-      "interval": 0.65,
-      "reward": 4,
+      "hp": 46,
+      "speed": 1.4,
+      "damage": 9,
+      "interval": 0.8,
+      "reward": 5,
       "unlock": 45,
       "weight": 20,
       "air": false,
@@ -289,11 +395,11 @@
     },
     "bomber": {
       "name": "自爆怪",
-      "hp": 85,
-      "speed": 0.85,
-      "damage": 150,
+      "hp": 100,
+      "speed": 0.8,
+      "damage": 125,
       "interval": 1.2,
-      "reward": 6,
+      "reward": 8,
       "unlock": 90,
       "weight": 10,
       "air": false,
@@ -304,11 +410,11 @@
     },
     "flyer": {
       "name": "飞行怪",
-      "hp": 65,
+      "hp": 75,
       "speed": 1,
-      "damage": 10,
-      "interval": 1,
-      "reward": 5,
+      "damage": 11,
+      "interval": 1.15,
+      "reward": 6,
       "unlock": 150,
       "weight": 10,
       "air": true,
@@ -319,11 +425,11 @@
     },
     "bombardier": {
       "name": "轰炸怪",
-      "hp": 130,
+      "hp": 160,
       "speed": 0.65,
-      "damage": 55,
-      "interval": 4,
-      "reward": 9,
+      "damage": 50,
+      "interval": 4.5,
+      "reward": 12,
       "unlock": 210,
       "weight": 5,
       "air": true,
@@ -334,41 +440,41 @@
     },
     "siege": {
       "name": "攻城怪",
-      "hp": 320,
+      "hp": 350,
       "speed": 0.4,
-      "damage": 45,
-      "interval": 1.8,
-      "reward": 12,
+      "damage": 38,
+      "interval": 2,
+      "reward": 18,
       "unlock": 120,
       "weight": 10,
       "air": false,
       "width": 0.9,
       "height": 1.1,
-      "armor": 0.3,
+      "armor": 0.25,
       "boss": false
     },
     "beast": {
       "name": "碎墙巨兽",
-      "hp": 2400,
+      "hp": 2600,
       "speed": 0.35,
-      "damage": 70,
-      "interval": 1.5,
-      "reward": 150,
+      "damage": 62,
+      "interval": 1.8,
+      "reward": 200,
       "unlock": 300,
       "weight": 0,
       "air": false,
       "width": 1.6,
       "height": 2,
-      "armor": 0.2,
+      "armor": 0.15,
       "boss": true
     },
     "carrier": {
-      "name": "空中母舰",
-      "hp": 2000,
-      "speed": 0.45,
-      "damage": 100,
-      "interval": 8,
-      "reward": 150,
+      "name": "异形母舰",
+      "hp": 2400,
+      "speed": 0.5,
+      "damage": 95,
+      "interval": 10,
+      "reward": 220,
       "unlock": 600,
       "weight": 0,
       "air": true,
@@ -376,6 +482,81 @@
       "height": 1.5,
       "armor": 0,
       "boss": true
+    },
+    "marshal": {
+      "name": "散阵指挥虫",
+      "hp": 170,
+      "speed": 0.65,
+      "damage": 12,
+      "interval": 1.6,
+      "reward": 14,
+      "unlock": 180,
+      "weight": 4,
+      "air": false,
+      "width": 0.8,
+      "height": 0.85,
+      "armor": 0,
+      "boss": false
+    },
+    "leaper": {
+      "name": "跃袭兽",
+      "hp": 100,
+      "speed": 1.1,
+      "damage": 18,
+      "interval": 1.5,
+      "reward": 10,
+      "unlock": 100,
+      "weight": 7,
+      "air": false,
+      "width": 0.8,
+      "height": 0.85,
+      "armor": 0,
+      "boss": false
+    },
+    "blastbeetle": {
+      "name": "隔爆甲兽",
+      "hp": 280,
+      "speed": 0.45,
+      "damage": 26,
+      "interval": 2,
+      "reward": 18,
+      "unlock": 140,
+      "weight": 6,
+      "air": false,
+      "width": 1.1,
+      "height": 0.85,
+      "armor": 0,
+      "boss": false
+    },
+    "reflector": {
+      "name": "护甲虫",
+      "hp": 200,
+      "speed": 0.55,
+      "damage": 20,
+      "interval": 2,
+      "reward": 18,
+      "unlock": 240,
+      "weight": 3,
+      "air": false,
+      "width": 1.1,
+      "height": 0.85,
+      "armor": 0,
+      "boss": false
+    },
+    "spitter": {
+      "name": "酸液虫",
+      "hp": 150,
+      "speed": 0.65,
+      "damage": 22,
+      "interval": 3.8,
+      "reward": 12,
+      "unlock": 160,
+      "weight": 5,
+      "air": false,
+      "width": 0.8,
+      "height": 0.85,
+      "armor": 0,
+      "boss": false
     }
   },
   "perks": {
@@ -431,16 +612,56 @@
   "schedule": {
     "firstEnemy": 8,
     "baseRate": 0.35,
-    "rateGrowth": 0.045,
+    "rateGrowth": 0.05,
     "maxRate": 3,
     "enemyCap": 180,
     "bossEvery": 300,
     "perkEvery": 120,
     "passiveEvery": 5,
     "passiveGold": 5,
-    "hpGrowth": 0.14,
-    "damageGrowth": 0.1,
+    "hpGrowth": 0.12,
+    "damageGrowth": 0.07,
     "speedGrowth": 0.015,
-    "eliteChance": 0.12
-  }
+    "eliteChance": 0.12,
+    "beastStompCooldown": 20,
+    "beastStompDamage": 90,
+    "beastStompRadius": 2.6,
+    "beastRockCooldown": 16,
+    "beastRockDamage": 75,
+    "carrierLaserCooldown": 17,
+    "carrierLaserDamage": 110,
+    "carrierMissileCooldown": 16,
+    "carrierMissileDamage": 90,
+    "enemyBombFlight": 0.9,
+    "arrowSpeed": 22,
+    "cannonSpeed": 18,
+    "eventFirst": 165,
+    "eventEvery": 125,
+    "eventWarning": 6,
+    "eventMissileDamage": 55,
+    "eventMissileRadius": 1.15,
+    "eventDropCount": 3,
+    "reflectShield": 95,
+    "blastResistance": 0.5,
+    "spitterRange": 6.5,
+    "marshalRadius": 5,
+    "marshalGap": 2.2,
+    "leapCooldown": 5,
+    "leapSpeed": 5,
+    "beastMeleeRadius": 1.6,
+    "beastChargeRadius": 2,
+    "normalHp": 1.45,
+    "normalDamage": 1.25,
+    "normalRate": 1.35,
+    "hardHp": 2.1,
+    "hardDamage": 1.6,
+    "hardRate": 1.7,
+    "bulletSpeed": 48,
+    "carrierBombRadius": 1.4,
+    "carrierSummonEvery": 18,
+    "carrierBombEvery": 10,
+    "carrierEngageX": 30,
+    "beastChargeDamage": 225
+  },
+  "balanceRevision": 2
 }

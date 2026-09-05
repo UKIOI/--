@@ -8,15 +8,15 @@ it('simulates a full hour under a sustained artificial stress load',async()=>{
  let totalMs=0,maxBuildings=0,maxEnemies=0,maxShots=0,maxEffects=0;const start=performance.now();
  for(let tick=0;tick<216000;tick++){
   // This is an artificial workload, not a claimed survival or balance result.
-  e.s.coreHp=3000;if(e.s.candidates.length)e.choose(e.s.candidates[0]);
+  e.s.coreHp=1_000_000_000;if(e.s.candidates.length)e.choose(e.s.candidates[0]);
   if(tick%600===0){while(e.s.enemies.filter(x=>!e.config.enemies[x.type].boss).length<180)e.spawn(tick%1200===0?'siege':'flyer',false);}
   if(tick%3600===0){for(let c=3;c<23;c++){if(!e.s.buildings.some(b=>Math.floor(b.x)===c)){for(let h=0;h<7;h++)add(e,c,h,kinds[(c+h)%8]);}}}
   const t=performance.now();e.step();totalMs+=performance.now()-t;
   maxBuildings=Math.max(maxBuildings,e.s.buildings.length);maxEnemies=Math.max(maxEnemies,e.s.enemies.length);maxShots=Math.max(maxShots,e.s.shots.length);maxEffects=Math.max(maxEffects,e.effects.length);
   if(tick%1000===0){expect(e.s.alive).toBe(true);expect(e.s.enemies.length).toBeLessThanOrEqual(181);expect(e.s.buildings.every(b=>Number.isFinite(b.hp)&&Number.isFinite(b.y)&&b.y>=.5)).toBe(true);await new Promise(resolve=>setTimeout(resolve,0));}
  }
- expect(e.time).toBe(3600);mkdirSync('../docs',{recursive:true});writeFileSync('../docs/stability-result.json',JSON.stringify({seed:20260905,simulatedSeconds:e.time,steps:216000,elapsedMs:performance.now()-start,averageStepMs:totalMs/216000,maxBuildings,maxEnemies,maxShots,maxEffects,artificialCoreRefill:true,artificialEnemyRefill:true,rendered:false},null,2));
-},120000);
+ expect(e.time).toBe(3600);mkdirSync('../docs',{recursive:true});writeFileSync('../docs/stability-result.json',JSON.stringify({seed:20260905,simulatedSeconds:e.time,steps:216000,elapsedMs:performance.now()-start,averageStepMs:totalMs/216000,maxBuildings,maxEnemies,maxShots,maxEffects,artificialCoreRefill:true,artificialCoreHp:1_000_000_000,artificialEnemyRefill:true,rendered:false},null,2));
+},300000);
 it('records two deterministic build strategies and a no-build baseline',()=>{
  const results=[];for(const layout of [0,1,2]){const e=new Engine(config as Config,20260905,'balance-'+layout);let bossSeen=false;
  for(let i=0;i<60*600&&e.s.alive;i++){

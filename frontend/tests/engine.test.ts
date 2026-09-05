@@ -1,6 +1,7 @@
+// Fixed pre-balance numeric fixture for mechanics; balance.test.ts exercises current data.
 import {describe,it,expect} from 'vitest';
 import {Engine} from '../src/game/engine';
-import config from '../../content/game-config.json';
+import config from '../../content/balance-v1.json';
 import type {Config,Building} from '../src/game/types';
 const make=()=>new Engine(config as Config,123,'test');
 const ticks=(e:Engine,n:number)=>{for(let i=0;i<n;i++)e.step();};
@@ -11,7 +12,7 @@ describe('deterministic survival engine',()=>{
  it('rejects expensive, cooling, full and falling columns without spending',()=>{const e=make();e.s.gold=0;e.command({type:'drop',kind:'wall',column:5});e.step();expect(e.s.gold).toBe(0);e.s.gold=300;e.s.dropCooldown=1;e.command({type:'drop',kind:'wall',column:5});e.step();expect(e.s.gold).toBe(300);e.s.dropCooldown=0;for(let y=0;y<12;y++)block(e,5,y);e.command({type:'drop',kind:'wall',column:5});e.step();expect(e.s.gold).toBe(300);block(e,6,10).settled=false;e.command({type:'drop',kind:'wall',column:6});e.step();expect(e.s.gold).toBe(300);});
  it('sweeps enemies once per fall and displaces surviving ground units',()=>{const e=make();e.spawn('siege',false,10.5);const enemy=e.s.enemies[0];enemy.maxHp=1000;enemy.hp=1000;enemy.speedScale=.001;const b=block(e,10,3);b.settled=false;b.v=18;ticks(e,90);expect(enemy.hp).toBe(900);expect(enemy.x).toBeGreaterThanOrEqual(11.45);expect(b.y).toBe(.5);});
  it('refunds proportional accumulated cost and cancels demolished deaths',()=>{const e=make(),b=block(e,6,0);expect(e.refund(b)).toBe(24);b.hp=325;expect(e.refund(b)).toBe(12);e.command({type:'upgrade',id:b.id,branch:0});e.step();expect(b.hp).toBe(650);expect(e.refund(b)).toBe(30);e.command({type:'demolish',id:b.id});ticks(e,30);e.command({type:'cancelDemolish'});ticks(e,50);expect(e.s.buildings).toHaveLength(1);e.command({type:'demolish',id:b.id});e.step();b.hp=0;const gold=e.s.gold;ticks(e,65);expect(e.s.gold).toBe(gold);});
- it('blocks direct fire with friendly structures and respects mortar minimum range',()=>{const e=make();block(e,5,0,'ballista');block(e,6,0);e.spawn('grunt',false,8);e.step();expect(e.s.enemies[0].hp).toBe(60);const m=make();block(m,5,0,'mortar');m.spawn('grunt',false,7);m.step();expect(m.s.shots).toHaveLength(0);});
+ it('blocks direct fire with friendly structures and respects mortar minimum range',()=>{const e=make();e.s.difficulty='hard';block(e,5,0,'ballista');block(e,6,0);e.spawn('grunt',false,8);e.step();expect(e.s.enemies[0].hp).toBe(126);const m=make();block(m,5,0,'mortar');m.spawn('grunt',false,7);m.step();expect(m.s.shots).toHaveLength(0);});
  it('anti air ignores ground and falling mines freeze progress',()=>{const e=make();block(e,5,0,'anti_air');e.spawn('grunt',false,7);const b=block(e,9,9,'mine');b.settled=false;e.step();expect(e.s.enemies[0].hp).toBe(60);expect(b.cooldown).toBe(10);});
  it('pausing freezes every timer and yields no offline income',()=>{const e=make();e.paused=true;const before=e.snapshot();ticks(e,1000);expect(e.snapshot()).toEqual(before);});
  it('same seed and save/resume produce identical future state',()=>{const a=make(),b=make();a.command({type:'drop',kind:'wall',column:18});b.command({type:'drop',kind:'wall',column:18});ticks(a,1000);ticks(b,1000);expect(a.snapshot()).toEqual(b.snapshot());const restored=new Engine(config as Config,1,'',a.snapshot());restored.paused=false;ticks(a,400);ticks(restored,400);expect(a.snapshot()).toEqual(restored.snapshot());});

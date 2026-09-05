@@ -1,0 +1,8 @@
+import {test,expect} from '@playwright/test';import {readFileSync} from 'node:fs';import {Engine} from '../../src/game/engine';
+const config=JSON.parse(readFileSync('../content/game-config.json','utf8'));
+test('boss telegraphs, animated enemies and launched bombs render correctly',async({page},info)=>{
+ const e=new Engine(config,123,'enemy-effects-preview');e.s.buildings.push({id:e.s.nextEntityId++,type:'wall',x:15.5,y:.5,branch:-1,spent:40,hp:650,settled:true,v:0,fallId:1,hit:[],cooldown:0});
+ e.spawn('carrier',false,18);e.s.enemies[0].special=0;e.s.enemies[0].secondary=0;e.spawn('bombardier',false,16);e.s.enemies[1].cooldown=0;for(const [i,type] of ['grunt','runner','bomber','flyer','siege'].entries())e.spawn(type,false,20+i*2);e.step();const errors:string[]=[];page.on('pageerror',x=>errors.push(x.message));
+ await page.route('**/api/v1/**',r=>{const p=new URL(r.request().url()).pathname;const data=p.endsWith('/config')?config:p.endsWith('/save')?{revision:0,snapshot:e.snapshot(),savedAt:new Date().toISOString()}:p.endsWith('/settings')?{musicVolume:0,sfxVolume:0,reducedMotion:false,tutorialSeen:true}:null;return r.fulfill({status:data?200:204,contentType:'application/json',body:data?JSON.stringify(data):undefined});});
+ await page.goto('/');await page.getByRole('button',{name:/继续防守/}).click();await page.getByRole('button',{name:/继续 Space/}).click();await page.waitForTimeout(1600);await page.screenshot({path:`../docs/enemy-combat-${info.project.name}.png`});await page.keyboard.press('Space');await expect(page.getByText('模拟已暂停')).toBeVisible();expect(errors).toEqual([]);
+});

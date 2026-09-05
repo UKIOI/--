@@ -1,15 +1,9 @@
-"""Regenerate the initial PRD configuration (runtime reads JSON only)."""
+"""Format the authoritative configuration without resetting tuned balance values."""
 import json
 from pathlib import Path
-b={}
-rows=[('wall','城墙','▥',40,650,100,0,0,0,'阻挡敌人，为上层提供支撑'),('ballista','弩炮','➶',70,220,35,24,.8,7,'直射地面 · 注意友方遮挡'),('mortar','迫击炮','◒',120,180,45,65,2.8,11,'抛射对地 · 范围爆炸'),('anti_air','防空塔','⌁',90,200,35,22,.55,9,'专注空中目标'),('mine','矿场','◇',80,160,20,0,10,0,'每 10 秒生产金币'),('repair','维修站','✚',100,200,25,20,1,2.5,'修复范围内受损友方'),('frost','冰霜塔','❄',90,200,30,5,1.5,4,'范围寒冷与减速'),('amplifier','增幅器','◎',130,180,25,0,0,2.5,'提升附近武器伤害')]
-up=[(60,('加固墙',{'hp':1300}),('尖刺墙',{'hp':850,'thorns':15})),(100,('重弩',{'damage':55,'interval':1.2,'range':9}),('连弩',{'damage':18,'interval':.3})),(150,('重炮',{'damage':120,'radius':1.8}),('速射炮',{'interval':1.5})),(110,('重型防空',{'damage':44,'interval':.7}),('广域防空',{'range':13})),(120,('深井矿',{'production':18}),('加固矿',{'hp':600,'production':13})),(130,('强效维修',{'damage':40}),('广域维修',{'range':4,'damage':25})),(120,('极寒',{'slow':.5,'slowDuration':2.5}),('冰环',{'range':6,'damage':12})),(160,('强效增幅',{'boost':.35}),('广域增幅',{'range':4}))]
-for r,u in zip(rows,up):
-    key,name,icon,cost,hp,impact,damage,interval,rng,desc=r
-    b[key]=dict(name=name,icon=icon,cost=cost,hp=hp,impact=impact,damage=damage,interval=interval,range=rng,description=desc,minRange=3 if key=='mortar' else 0,radius=1.3,production=10,slow=.35,slowDuration=2,boost=.2,thorns=0,upgradeCost=u[0],branches=[{'name':n,**v} for n,v in u[1:]])
-e={}
-for key,name,hp,speed,damage,interval,reward,unlock,weight,air,w,h,armor in [('grunt','普通怪',60,.7,12,1,4,0,45,False,.6,.8,0),('runner','疾跑怪',40,1.45,8,.65,4,45,20,False,.6,.8,0),('bomber','自爆怪',85,.85,150,1.2,6,90,10,False,.6,.8,0),('flyer','飞行怪',65,1,10,1,5,150,10,True,.6,.8,0),('bombardier','轰炸怪',130,.65,55,4,9,210,5,True,.6,.8,0),('siege','攻城怪',320,.4,45,1.8,12,120,10,False,.9,1.1,.3),('beast','碎墙巨兽',2400,.35,70,1.5,150,300,0,False,1.6,2,.2),('carrier','空中母舰',2000,.45,100,8,150,600,0,True,3,1.5,0)]:
-    e[key]=dict(name=name,hp=hp,speed=speed,damage=damage,interval=interval,reward=reward,unlock=unlock,weight=weight,air=air,width=w,height=h,armor=armor,boss=key in ['beast','carrier'])
-perks={k:dict(name=n,description=d,max=m,value=v) for k,n,d,m,v in [('attack','火力改良','攻击建筑伤害 +10%',5,.1),('durability','结构加固','建筑最大生命 +15%',5,.15),('repair_efficiency','维修优化','维修量 +20%',3,.2),('mining','高效采矿','矿场产量 +20%',3,.2),('impact','重压投放','砸击伤害 +25%',4,.25),('deployment','快速吊装','投放冷却 -0.15 秒',4,.15),('core_repair','核心抢修','立即恢复核心 600 生命',999999,600),('subsidy','战时补贴','每次被动收入 +2 金币',4,2)]}
-c=dict(configVersion=1,world=dict(width=36,height=16,columns=24,layers=12,dropY=14.5,gravity=24,maxVelocity=18,coreHp=3000,initialGold=300,deployCooldown=1.2),buildings=b,enemies=e,perks=perks,schedule=dict(firstEnemy=8,baseRate=.35,rateGrowth=.045,maxRate=3,enemyCap=180,bossEvery=300,perkEvery=120,passiveEvery=5,passiveGold=5,hpGrowth=.14,damageGrowth=.1,speedGrowth=.015,eliteChance=.12))
-Path(__file__).with_name('game-config.json').write_text(json.dumps(c,ensure_ascii=False,indent=2),encoding='utf-8')
+path=Path(__file__).with_name('game-config.json')
+config=json.loads(path.read_text(encoding='utf-8'))
+assert config['configVersion']==1
+assert all(key in config for key in ['world','buildings','enemies','perks','schedule'])
+path.write_text(json.dumps(config,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+print('Configuration formatted; balance values preserved.')
