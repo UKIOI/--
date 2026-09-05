@@ -1,4 +1,4 @@
-﻿import type {Engine} from '../engine';
+import type {Engine} from '../engine';
 import {enemyProjectilePosition} from '../enemy-projectiles';
 export function drawEnemyAttacks(c:CanvasRenderingContext2D,e:Engine,s:number,X:(x:number)=>number,Y:(y:number)=>number,reduced:boolean){
  const line=(x:number,y:number,tx:number,ty:number,color:string,width=1)=>{c.beginPath();c.moveTo(X(x),Y(y));c.lineTo(X(tx),Y(ty));c.strokeStyle=color;c.lineWidth=width;c.stroke();};
@@ -14,7 +14,7 @@ export function drawEnemyAttacks(c:CanvasRenderingContext2D,e:Engine,s:number,X:
   if(shot.phase==='flight'){
    const t=Math.max(0,Math.min(1,1-shot.remaining/shot.duration)),p=enemyProjectilePosition(shot,t),prev=enemyProjectilePosition(shot,Math.max(0,t-.04));
    if(!reduced)for(let i=1;i<=5;i++){const q=enemyProjectilePosition(shot,Math.max(0,t-i*.035));c.globalAlpha=(6-i)*.085;c.fillStyle=shot.kind==='rock'?'#ae9c86':'#f5ce96';c.beginPath();c.arc(X(q.x),Y(q.y),s*(.04+i*.014),0,Math.PI*2);c.fill();}c.globalAlpha=1;
-   c.save();c.translate(X(p.x),Y(p.y));c.rotate(Math.atan2(-(p.y-prev.y),p.x-prev.x));c.scale(s,s);c.strokeStyle='#ffe1aa';c.lineWidth=.04;
+   c.save();c.translate(X(p.x),Y(p.y));c.rotate(Math.atan2(-(p.y-prev.y),p.x-prev.x));c.scale(s*(shot.visual==='meteor'?1.9:1),s*(shot.visual==='meteor'?1.9:1));c.strokeStyle='#ffe1aa';c.lineWidth=.04;
    if(shot.visual==='plasma'){c.fillStyle='#ab9fff';c.beginPath();c.arc(0,0,.24,0,Math.PI*2);c.fill();c.stroke();}else if(shot.visual==='reflected'){c.fillStyle='#8cb7c4';c.strokeStyle='#d9faff';c.lineWidth=.06;c.beginPath();c.arc(0,0,.22,0,Math.PI*2);c.fill();c.stroke();}else if(shot.visual==='acid'){c.fillStyle='#b7db70';c.beginPath();c.ellipse(0,0,.23,.14,0,0,Math.PI*2);c.fill();}else if(shot.kind==='rock'){c.rotate(reduced?0:t*5);c.fillStyle='#aa8c6d';c.beginPath();c.moveTo(.28,0);c.lineTo(.13,-.23);c.lineTo(-.19,-.18);c.lineTo(-.26,.13);c.lineTo(.05,.25);c.closePath();c.fill();c.stroke();}
    else{c.fillStyle=shot.visual==='missile'?'#afc3c8':'#d9a16e';c.beginPath();c.moveTo(.29,0);c.lineTo(.1,-.11);c.lineTo(-.19,-.11);c.lineTo(-.19,.11);c.lineTo(.1,.11);c.closePath();c.fill();c.stroke();c.fillStyle='#f5d486';c.fillRect(-.27,-.16,.1,.32);if(shot.visual==='missile'){c.fillStyle='#fff0b5';c.beginPath();c.moveTo(-.25,-.07);c.lineTo(-.52,0);c.lineTo(-.25,.07);c.fill();}}
    c.restore();continue;

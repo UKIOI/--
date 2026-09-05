@@ -256,7 +256,7 @@ export interface components {
              * Kind
              * @enum {string}
              */
-            kind: "missiles" | "airdrop" | "meteor" | "breach";
+            kind: "missiles" | "airdrop" | "meteor" | "breach" | "sabotage" | "siege";
             /** Remaining */
             remaining: number;
             /** Columns */

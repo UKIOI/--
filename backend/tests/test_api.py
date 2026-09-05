@@ -46,7 +46,7 @@ def test_settings(client):
     assert client.put('/api/v1/settings',json=s).status_code==422
 
 @pytest.mark.parametrize('state', ['burrow', 'erupt', 'exposed'])
-@pytest.mark.parametrize('event', ['meteor', 'breach'])
+@pytest.mark.parametrize('event', ['meteor', 'breach', 'sabotage', 'siege'])
 def test_new_boss_and_event_persistence(client, state, event):
     s=snapshot()
     s['enemies']=[dict(id=1,type='sandworm',x=10.5,y=0,hp=3200,maxHp=3200,shield=0,armor=0,attackScale=1,speedScale=1,reward=260,elite='',cooldown=0,slows=[],skill=0,summon=0,state=state,timer=3,distance=0,target=0)]

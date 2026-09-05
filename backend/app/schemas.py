@@ -87,7 +87,7 @@ class Shot(BaseModel):
     radius: Finite = Field(ge=0)
 
 class Incident(BaseModel):
-    kind: Literal['missiles', 'airdrop', 'meteor', 'breach']
+    kind: Literal['missiles', 'airdrop', 'meteor', 'breach', 'sabotage', 'siege']
     remaining: Finite = Field(gt=0, le=6)
     columns: list[Annotated[int, Field(ge=0, le=23)]] = Field(max_length=3)
 

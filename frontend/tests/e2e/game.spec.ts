@@ -1,7 +1,7 @@
 import {test,expect} from '@playwright/test';
 test('new game, deploy, pause, save, reload and continue',async({page})=>{
  const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));await page.goto('/');
- await expect(page.getByRole('button',{name:'建立新防线'})).toBeEnabled();await page.getByRole('button',{name:'建立新防线'}).click();
+ await expect(page.getByRole('button',{name:'建立新防线'})).toBeEnabled();if(await page.getByRole('button',{name:'跳过引导'}).isVisible())await page.getByRole('button',{name:'跳过引导'}).click();await page.getByRole('button',{name:'建立新防线'}).click();
  if(await page.getByRole('button',{name:'确认新游戏'}).isVisible())await page.getByRole('button',{name:'确认新游戏'}).click();
  await expect(page.locator('canvas')).toBeVisible();const tutorial=page.getByRole('button',{name:/明白了，开始指挥/});if(await tutorial.isVisible())await tutorial.click();await expect(page.locator('.overlay')).toHaveCount(0);
  await expect(page.locator('canvas')).toBeVisible();await page.screenshot({path:'../docs/game-1280.png'});const box=(await page.locator('canvas').boundingBox())!;
