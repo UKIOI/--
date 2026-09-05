@@ -359,7 +359,9 @@
           "interval": 2.9,
           "range": 29
         }
-      ]
+      ],
+      "limit": 20,
+      "easyLimit": 20
     }
   },
   "enemies": {
@@ -557,6 +559,51 @@
       "height": 0.85,
       "armor": 0,
       "boss": false
+    },
+    "sandworm": {
+      "name": "裂地沙虫",
+      "hp": 3200,
+      "speed": 0,
+      "damage": 80,
+      "interval": 2.5,
+      "reward": 260,
+      "unlock": 900,
+      "weight": 0,
+      "air": false,
+      "width": 3,
+      "height": 5,
+      "armor": 0,
+      "boss": true
+    },
+    "queen": {
+      "name": "虫巢女王",
+      "hp": 3400,
+      "speed": 0.22,
+      "damage": 65,
+      "interval": 2,
+      "reward": 280,
+      "unlock": 1200,
+      "weight": 0,
+      "air": false,
+      "width": 2.8,
+      "height": 2.4,
+      "armor": 0.15,
+      "boss": true
+    },
+    "tempest": {
+      "name": "雷暴巨兽",
+      "hp": 3000,
+      "speed": 0.5,
+      "damage": 85,
+      "interval": 3,
+      "reward": 300,
+      "unlock": 1500,
+      "weight": 0,
+      "air": true,
+      "width": 3.5,
+      "height": 2.5,
+      "armor": 0.1,
+      "boss": true
     }
   },
   "perks": {
@@ -661,7 +708,22 @@
     "carrierSummonEvery": 18,
     "carrierBombEvery": 10,
     "carrierEngageX": 30,
-    "beastChargeDamage": 225
+    "beastChargeDamage": 225,
+    "wormWarning": 5,
+    "wormRiseSpeed": 5,
+    "wormExpose": 12,
+    "queenBroodEvery": 16,
+    "queenAcidEvery": 11,
+    "tempestLightningEvery": 14,
+    "tempestOrbEvery": 18,
+    "meteorDamage": 85,
+    "meteorRadius": 1.8,
+    "hpAcceleration": 0.006,
+    "damageAcceleration": 0.003,
+    "growthRampMinute": 10,
+    "liveGrowth": 1,
+    "bossHpGrowth": 0.15,
+    "bossDamageGrowth": 0.08
   },
   "balanceRevision": 2
 }

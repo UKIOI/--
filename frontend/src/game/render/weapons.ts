@@ -4,7 +4,7 @@ import {shellPath} from '../trajectory';
 export function drawWeapon(c:CanvasRenderingContext2D,e:Engine,b:Building,s:number,X:(x:number)=>number,Y:(y:number)=>number,reduced:boolean){
  const p=e.stats(b),air=b.type==='anti_air';
  const fired=[...e.effects].reverse().find(f=>f.kind===b.type&&f.x===b.x&&f.y===b.y);
- const target=b.settled?e.s.enemies.filter(a=>e.config.enemies[a.type].air===air&&Math.hypot(a.x-b.x,a.y-b.y)<=p.range&&Math.hypot(a.x-b.x,a.y-b.y)>=p.minRange).sort((a,z)=>Math.hypot(a.x-2,a.y-1)-Math.hypot(z.x-2,z.y-1)||a.id-z.id)[0]:undefined;
+ const target=b.settled?e.s.enemies.filter(a=>e.targetable(a)&&e.isAir(a)===air&&Math.hypot(a.x-b.x,a.y-b.y)<=p.range&&Math.hypot(a.x-b.x,a.y-b.y)>=p.minRange).sort((a,z)=>Math.hypot(a.x-2,a.y-1)-Math.hypot(z.x-2,z.y-1)||a.id-z.id)[0]:undefined;
  const tx=e.controlled===b.id?e.aim.x:fired?.tx??target?.x??b.x+5,ty=e.controlled===b.id?e.aim.y:fired?.ty??target?.y??b.y;
  const angle=b.type==='mortar'?shellPath({originX:b.x,originY:b.y,x:tx,y:ty},0).angle:Math.atan2(ty-b.y,tx-b.x);
  const age=fired?.life??0,recoil=reduced?0:Math.max(0,age-.12)*.65;

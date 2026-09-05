@@ -14,7 +14,7 @@ def snapshot():
 def test_config_and_health(client):
     assert client.get('/api/v1/health').json()['status']=='ok'
     c=client.get('/api/v1/config').json()
-    assert len(c['buildings'])==11 and len(c['enemies'])==13
+    assert len(c['buildings'])==11 and len(c['enemies'])==16
     assert c['buildings']['wall']['hp']==720
 
 def test_save_revision_and_restart(client):
@@ -44,6 +44,19 @@ def test_settings(client):
     assert TestClient(app).get('/api/v1/settings').json()==s
     s['sfxVolume']=2
     assert client.put('/api/v1/settings',json=s).status_code==422
+
+@pytest.mark.parametrize('state', ['burrow', 'erupt', 'exposed'])
+@pytest.mark.parametrize('event', ['meteor', 'breach'])
+def test_new_boss_and_event_persistence(client, state, event):
+    s=snapshot()
+    s['enemies']=[dict(id=1,type='sandworm',x=10.5,y=0,hp=3200,maxHp=3200,shield=0,armor=0,attackScale=1,speedScale=1,reward=260,elite='',cooldown=0,slows=[],skill=0,summon=0,state=state,timer=3,distance=0,target=0)]
+    s['nextEntityId']=2
+    s['event']=dict(kind=event,remaining=5,columns=[8,12,16])
+    response=client.put('/api/v1/save',json={'expectedRevision':0,'snapshot':s})
+    assert response.status_code==200, response.text
+    loaded=client.get('/api/v1/save').json()['snapshot']
+    assert loaded['enemies'][0]['state']==state
+    assert loaded['event']['kind']==event
 
 def test_bridge_and_cannon_persistence(client):
     s=snapshot()

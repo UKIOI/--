@@ -200,7 +200,7 @@ export interface components {
              * State
              * @enum {string}
              */
-            state: "walk" | "charge" | "dash" | "fuse" | "leap" | "recover";
+            state: "walk" | "charge" | "dash" | "fuse" | "leap" | "recover" | "burrow" | "erupt" | "exposed";
             /** Timer */
             timer: number;
             /** Distance */
@@ -256,7 +256,7 @@ export interface components {
              * Kind
              * @enum {string}
              */
-            kind: "missiles" | "airdrop";
+            kind: "missiles" | "airdrop" | "meteor" | "breach";
             /** Remaining */
             remaining: number;
             /** Columns */

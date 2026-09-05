@@ -1,6 +1,8 @@
+import {drawNewBoss} from './new-bosses';
 import {enemyDetail} from './enemy-detail';
 /** Shared normalized silhouettes used by combat and the field guide. */
 export function drawEnemy(c:CanvasRenderingContext2D,type:string,x:number,y:number,w:number,h:number,time=0,reduced=false,attack=0,state='walk'){
+ if(drawNewBoss(c,type,x,y,w,h,time,reduced,state))return;
  c.save();c.translate(x,y);c.scale(w,h);c.lineJoin='round';c.lineCap='round';const air=['flyer','bombardier','carrier'].includes(type);const phase=time*(type==='runner'?15:7),walk=reduced?0:Math.sin(phase)*.08;const pulse=reduced?0:Math.sin(time*3)*.018;c.translate(reduced?0:-Math.sin(Math.min(1,attack/.3)*Math.PI)*.16,air?walk*.5:-Math.abs(walk)*.3);c.scale(1+pulse,1-pulse);if(state==='charge'&&!reduced)c.rotate(Math.sin(time*35)*.04);if(state==='fuse'){c.scale(1+Math.abs(walk),1+Math.abs(walk));}
  const ink='#18231f',bone='#eee0b9',metal='#72857d';
  const poly=(p:number[][],fill:string)=>{c.beginPath();p.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.closePath();c.fillStyle=fill;c.fill();c.strokeStyle=ink;c.lineWidth=.045;c.stroke();};
@@ -37,6 +39,9 @@ export function drawEnemy(c:CanvasRenderingContext2D,type:string,x:number,y:numb
  }enemyDetail(c,type,time,reduced);c.restore();
 }
 export const enemyLore:Record<string,{role:string;behavior:string;counter:string}>={
+ sandworm:{role:'地下 Boss',behavior:'巨型沙虫锁定建筑下方，预警 5 秒后逐层钻出，摧毁三列通道内全部建筑；暴露 12 秒后再次潜地。',counter:'预警时回收高价值建筑，分散阵地；沙虫出土后集中地面火力。潜地时不可被攻击。'},
+ queen:{role:'虫巢 Boss',behavior:'定期繁殖跃袭兽、隔爆甲兽等虫群，并向三处目标喷射酸液。',counter:'范围火力处理幼虫，用单体火力攻击女王，防止后排被酸液消耗。'},
+ tempest:{role:'雷暴 Boss',behavior:'巨翼雷兽在空中蓄积电能，预警后发动三处落雷及等离子弹。',counter:'广域防空覆盖空域，分散高层建筑，注意落雷提示。'},
  marshal:{role:'散阵指挥',behavior:'信号触须指挥附近地面怪物拉开间距，降低爆炸收益。',counter:'手控狙击塔优先击杀；拥堵时仍会聚集。'},
  leaper:{role:'机动突袭',behavior:'周期性短跃避开固定炮击落点，落地会短暂停顿；不会跳过城墙。',counter:'箭塔持续输出，冰霜塔减缓跳跃。'},
  blastbeetle:{role:'隔爆重甲',behavior:'爆炸伤害降低 50%，移动缓慢。',counter:'箭塔与狙击塔没有额外伤害减免。'},
@@ -47,7 +52,7 @@ export const enemyLore:Record<string,{role:string;behavior:string;counter:string
  bomber:{role:'接触自爆',behavior:'背负发光爆裂囊，接触障碍后蓄力 1.2 秒再爆炸。击杀不会引爆。',counter:'在蓄力结束前集火，避免将脆弱设施集中在最前排。'},
  flyer:{role:'空中突袭',behavior:'展开膜翼越过建筑，飞到核心上方直接攻击核心。',counter:'提前建造防空塔，地面火力无法命中它。'},
  bombardier:{role:'空中轰炸',behavior:'双旋翼运输重型炸弹，优先锁定附近累计造价最高的落稳建筑。',counter:'防空塔拦截，留意落点预警，上层建筑先承受投弹。'},
- siege:{role:'装甲攻城',behavior:'履带底盘与正面重甲缓慢推进，自带 30% 护甲。',counter:'迫击炮与寒冷伤害无视护甲，维修站维持前墙。'},
+ siege:{role:'装甲攻城',behavior:'履带底盘与正面重甲缓慢推进，自带 25% 护甲。',counter:'迫击炮与寒冷伤害无视护甲，维修站维持前墙。'},
  beast:{role:'地面 Boss',behavior:'骨角与重型护臂撕开防线。蓄力破城冲撞，还会踏地震波与投掷巨岩。',counter:'用加固墙承受冲撞，后排持续输出并维修。'},
  carrier:{role:'空中 Boss',behavior:'进入战区即准备释放三只护航怪与空降酸液虫。四枚强力导弹齐射，并轰炸最密集的连续三列，另有蓄能激光。',counter:'在母舰接近前部署防空，优先拦截护航与空降虫；分散关键设施，留意轰炸预警。'}
 };
