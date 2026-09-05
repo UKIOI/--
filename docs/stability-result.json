@@ -1,0 +1,14 @@
+{
+  "seed": 20260905,
+  "simulatedSeconds": 3600,
+  "steps": 216000,
+  "elapsedMs": 74756.2347,
+  "averageStepMs": 0.34043410046296363,
+  "maxBuildings": 150,
+  "maxEnemies": 181,
+  "maxShots": 63,
+  "maxEffects": 186,
+  "artificialCoreRefill": true,
+  "artificialEnemyRefill": true,
+  "rendered": false
+}

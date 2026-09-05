@@ -1,0 +1,446 @@
+{
+  "configVersion": 1,
+  "world": {
+    "width": 36,
+    "height": 16,
+    "columns": 24,
+    "layers": 12,
+    "dropY": 14.5,
+    "gravity": 24,
+    "maxVelocity": 18,
+    "coreHp": 3000,
+    "initialGold": 300,
+    "deployCooldown": 1.2
+  },
+  "buildings": {
+    "wall": {
+      "name": "城墙",
+      "icon": "▥",
+      "cost": 40,
+      "hp": 650,
+      "impact": 100,
+      "damage": 0,
+      "interval": 0,
+      "range": 0,
+      "description": "阻挡敌人，为上层提供支撑",
+      "minRange": 0,
+      "radius": 1.3,
+      "production": 10,
+      "slow": 0.35,
+      "slowDuration": 2,
+      "boost": 0.2,
+      "thorns": 0,
+      "upgradeCost": 60,
+      "branches": [
+        {
+          "name": "加固墙",
+          "hp": 1300
+        },
+        {
+          "name": "尖刺墙",
+          "hp": 850,
+          "thorns": 15
+        }
+      ]
+    },
+    "ballista": {
+      "name": "弩炮",
+      "icon": "➶",
+      "cost": 70,
+      "hp": 220,
+      "impact": 35,
+      "damage": 24,
+      "interval": 0.8,
+      "range": 7,
+      "description": "直射地面 · 注意友方遮挡",
+      "minRange": 0,
+      "radius": 1.3,
+      "production": 10,
+      "slow": 0.35,
+      "slowDuration": 2,
+      "boost": 0.2,
+      "thorns": 0,
+      "upgradeCost": 100,
+      "branches": [
+        {
+          "name": "重弩",
+          "damage": 55,
+          "interval": 1.2,
+          "range": 9
+        },
+        {
+          "name": "连弩",
+          "damage": 18,
+          "interval": 0.3
+        }
+      ]
+    },
+    "mortar": {
+      "name": "迫击炮",
+      "icon": "◒",
+      "cost": 120,
+      "hp": 180,
+      "impact": 45,
+      "damage": 65,
+      "interval": 2.8,
+      "range": 11,
+      "description": "抛射对地 · 范围爆炸",
+      "minRange": 3,
+      "radius": 1.3,
+      "production": 10,
+      "slow": 0.35,
+      "slowDuration": 2,
+      "boost": 0.2,
+      "thorns": 0,
+      "upgradeCost": 150,
+      "branches": [
+        {
+          "name": "重炮",
+          "damage": 120,
+          "radius": 1.8
+        },
+        {
+          "name": "速射炮",
+          "interval": 1.5
+        }
+      ]
+    },
+    "anti_air": {
+      "name": "防空塔",
+      "icon": "⌁",
+      "cost": 90,
+      "hp": 200,
+      "impact": 35,
+      "damage": 22,
+      "interval": 0.55,
+      "range": 9,
+      "description": "专注空中目标",
+      "minRange": 0,
+      "radius": 1.3,
+      "production": 10,
+      "slow": 0.35,
+      "slowDuration": 2,
+      "boost": 0.2,
+      "thorns": 0,
+      "upgradeCost": 110,
+      "branches": [
+        {
+          "name": "重型防空",
+          "damage": 44,
+          "interval": 0.7
+        },
+        {
+          "name": "广域防空",
+          "range": 13
+        }
+      ]
+    },
+    "mine": {
+      "name": "矿场",
+      "icon": "◇",
+      "cost": 80,
+      "hp": 160,
+      "impact": 20,
+      "damage": 0,
+      "interval": 10,
+      "range": 0,
+      "description": "每 10 秒生产金币",
+      "minRange": 0,
+      "radius": 1.3,
+      "production": 10,
+      "slow": 0.35,
+      "slowDuration": 2,
+      "boost": 0.2,
+      "thorns": 0,
+      "upgradeCost": 120,
+      "branches": [
+        {
+          "name": "深井矿",
+          "production": 18
+        },
+        {
+          "name": "加固矿",
+          "hp": 600,
+          "production": 13
+        }
+      ]
+    },
+    "repair": {
+      "name": "维修站",
+      "icon": "✚",
+      "cost": 100,
+      "hp": 200,
+      "impact": 25,
+      "damage": 20,
+      "interval": 1,
+      "range": 2.5,
+      "description": "修复范围内受损友方",
+      "minRange": 0,
+      "radius": 1.3,
+      "production": 10,
+      "slow": 0.35,
+      "slowDuration": 2,
+      "boost": 0.2,
+      "thorns": 0,
+      "upgradeCost": 130,
+      "branches": [
+        {
+          "name": "强效维修",
+          "damage": 40
+        },
+        {
+          "name": "广域维修",
+          "range": 4,
+          "damage": 25
+        }
+      ]
+    },
+    "frost": {
+      "name": "冰霜塔",
+      "icon": "❄",
+      "cost": 90,
+      "hp": 200,
+      "impact": 30,
+      "damage": 5,
+      "interval": 1.5,
+      "range": 4,
+      "description": "范围寒冷与减速",
+      "minRange": 0,
+      "radius": 1.3,
+      "production": 10,
+      "slow": 0.35,
+      "slowDuration": 2,
+      "boost": 0.2,
+      "thorns": 0,
+      "upgradeCost": 120,
+      "branches": [
+        {
+          "name": "极寒",
+          "slow": 0.5,
+          "slowDuration": 2.5
+        },
+        {
+          "name": "冰环",
+          "range": 6,
+          "damage": 12
+        }
+      ]
+    },
+    "amplifier": {
+      "name": "增幅器",
+      "icon": "◎",
+      "cost": 130,
+      "hp": 180,
+      "impact": 25,
+      "damage": 0,
+      "interval": 0,
+      "range": 2.5,
+      "description": "提升附近武器伤害",
+      "minRange": 0,
+      "radius": 1.3,
+      "production": 10,
+      "slow": 0.35,
+      "slowDuration": 2,
+      "boost": 0.2,
+      "thorns": 0,
+      "upgradeCost": 160,
+      "branches": [
+        {
+          "name": "强效增幅",
+          "boost": 0.35
+        },
+        {
+          "name": "广域增幅",
+          "range": 4
+        }
+      ]
+    }
+  },
+  "enemies": {
+    "grunt": {
+      "name": "普通怪",
+      "hp": 60,
+      "speed": 0.7,
+      "damage": 12,
+      "interval": 1,
+      "reward": 4,
+      "unlock": 0,
+      "weight": 45,
+      "air": false,
+      "width": 0.6,
+      "height": 0.8,
+      "armor": 0,
+      "boss": false
+    },
+    "runner": {
+      "name": "疾跑怪",
+      "hp": 40,
+      "speed": 1.45,
+      "damage": 8,
+      "interval": 0.65,
+      "reward": 4,
+      "unlock": 45,
+      "weight": 20,
+      "air": false,
+      "width": 0.6,
+      "height": 0.8,
+      "armor": 0,
+      "boss": false
+    },
+    "bomber": {
+      "name": "自爆怪",
+      "hp": 85,
+      "speed": 0.85,
+      "damage": 150,
+      "interval": 1.2,
+      "reward": 6,
+      "unlock": 90,
+      "weight": 10,
+      "air": false,
+      "width": 0.6,
+      "height": 0.8,
+      "armor": 0,
+      "boss": false
+    },
+    "flyer": {
+      "name": "飞行怪",
+      "hp": 65,
+      "speed": 1,
+      "damage": 10,
+      "interval": 1,
+      "reward": 5,
+      "unlock": 150,
+      "weight": 10,
+      "air": true,
+      "width": 0.6,
+      "height": 0.8,
+      "armor": 0,
+      "boss": false
+    },
+    "bombardier": {
+      "name": "轰炸怪",
+      "hp": 130,
+      "speed": 0.65,
+      "damage": 55,
+      "interval": 4,
+      "reward": 9,
+      "unlock": 210,
+      "weight": 5,
+      "air": true,
+      "width": 0.6,
+      "height": 0.8,
+      "armor": 0,
+      "boss": false
+    },
+    "siege": {
+      "name": "攻城怪",
+      "hp": 320,
+      "speed": 0.4,
+      "damage": 45,
+      "interval": 1.8,
+      "reward": 12,
+      "unlock": 120,
+      "weight": 10,
+      "air": false,
+      "width": 0.9,
+      "height": 1.1,
+      "armor": 0.3,
+      "boss": false
+    },
+    "beast": {
+      "name": "碎墙巨兽",
+      "hp": 2400,
+      "speed": 0.35,
+      "damage": 70,
+      "interval": 1.5,
+      "reward": 150,
+      "unlock": 300,
+      "weight": 0,
+      "air": false,
+      "width": 1.6,
+      "height": 2,
+      "armor": 0.2,
+      "boss": true
+    },
+    "carrier": {
+      "name": "空中母舰",
+      "hp": 2000,
+      "speed": 0.45,
+      "damage": 100,
+      "interval": 8,
+      "reward": 150,
+      "unlock": 600,
+      "weight": 0,
+      "air": true,
+      "width": 3,
+      "height": 1.5,
+      "armor": 0,
+      "boss": true
+    }
+  },
+  "perks": {
+    "attack": {
+      "name": "火力改良",
+      "description": "攻击建筑伤害 +10%",
+      "max": 5,
+      "value": 0.1
+    },
+    "durability": {
+      "name": "结构加固",
+      "description": "建筑最大生命 +15%",
+      "max": 5,
+      "value": 0.15
+    },
+    "repair_efficiency": {
+      "name": "维修优化",
+      "description": "维修量 +20%",
+      "max": 3,
+      "value": 0.2
+    },
+    "mining": {
+      "name": "高效采矿",
+      "description": "矿场产量 +20%",
+      "max": 3,
+      "value": 0.2
+    },
+    "impact": {
+      "name": "重压投放",
+      "description": "砸击伤害 +25%",
+      "max": 4,
+      "value": 0.25
+    },
+    "deployment": {
+      "name": "快速吊装",
+      "description": "投放冷却 -0.15 秒",
+      "max": 4,
+      "value": 0.15
+    },
+    "core_repair": {
+      "name": "核心抢修",
+      "description": "立即恢复核心 600 生命",
+      "max": 999999,
+      "value": 600
+    },
+    "subsidy": {
+      "name": "战时补贴",
+      "description": "每次被动收入 +2 金币",
+      "max": 4,
+      "value": 2
+    }
+  },
+  "schedule": {
+    "firstEnemy": 8,
+    "baseRate": 0.35,
+    "rateGrowth": 0.045,
+    "maxRate": 3,
+    "enemyCap": 180,
+    "bossEvery": 300,
+    "perkEvery": 120,
+    "passiveEvery": 5,
+    "passiveGold": 5,
+    "hpGrowth": 0.14,
+    "damageGrowth": 0.1,
+    "speedGrowth": 0.015,
+    "eliteChance": 0.12
+  }
+}

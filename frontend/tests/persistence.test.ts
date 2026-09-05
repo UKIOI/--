@@ -1,0 +1,8 @@
+import {describe,it,expect,vi,beforeEach} from 'vitest';
+const mocks=vi.hoisted(()=>({api:vi.fn(),localPut:vi.fn(async()=>{})}));
+vi.mock('../src/api/client',()=>({api:mocks.api,localPut:mocks.localPut,ApiError:class ApiError extends Error{constructor(public status:number,message:string){super(message);}}}));
+import {SaveQueue} from '../src/game/persistence';import {Engine} from '../src/game/engine';import config from '../../content/game-config.json';import type {Config} from '../src/game/types';
+describe('save queue',()=>{beforeEach(()=>{vi.clearAllMocks();});
+ it('keeps local first, serializes writes and coalesces to newest pending snapshot',async()=>{let resolve:(x:unknown)=>void=()=>{};mocks.api.mockImplementationOnce(()=>new Promise(r=>resolve=r)).mockResolvedValue({data:{revision:2}});const q=new SaveQueue(()=>{},()=>{},()=>{}),e=new Engine(config as Config);const first=q.save(e.snapshot());await Promise.resolve();await Promise.resolve();e.s.tick=60;q.save(e.snapshot());e.s.tick=120;q.save(e.snapshot());resolve({data:{revision:1}});await first;expect(mocks.api).toHaveBeenCalledTimes(2);expect(mocks.api.mock.calls[1][2].snapshot.tick).toBe(120);expect(mocks.api.mock.calls[1][2].expectedRevision).toBe(1);expect(mocks.localPut.mock.invocationCallOrder[0]).toBeLessThan(mocks.api.mock.invocationCallOrder[0]);});
+ it('retains local snapshot when the backend is offline',async()=>{mocks.api.mockRejectedValue(Error('offline'));const status=vi.fn(),q=new SaveQueue(status,()=>{},()=>{});expect(await q.save(new Engine(config as Config).snapshot())).toBe(false);expect(mocks.localPut).toHaveBeenCalled();expect(status.mock.lastCall?.[0]).toContain('浏览器副本');});
+});

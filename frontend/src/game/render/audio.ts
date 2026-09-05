@@ -1,0 +1,7 @@
+export class AudioSystem {
+ private ctx:AudioContext|null=null;private drone:OscillatorNode|null=null;private gain:GainNode|null=null;last=0;
+ unlock(){try{if(!this.ctx)this.ctx=new AudioContext();void this.ctx.resume();}catch{/* Audio unavailable is nonfatal. */}}
+ music(volume:number,running:boolean){if(!this.ctx)return;try{if(!this.drone){this.drone=this.ctx.createOscillator();this.gain=this.ctx.createGain();this.drone.type='sine';this.drone.frequency.value=55;this.drone.connect(this.gain);this.gain.connect(this.ctx.destination);this.drone.start();}this.gain!.gain.setTargetAtTime(running?volume*.025:0,this.ctx.currentTime,.3);}catch{}}
+ play(kind:string,volume:number){const c=this.ctx;if(!c||!volume||c.currentTime-this.last<.045)return;this.last=c.currentTime;const o=c.createOscillator(),g=c.createGain();o.type=kind==='explosion'?'sawtooth':'triangle';const f:Record<string,number>={drop:180,gold:900,kill:600,upgrade:1000,explosion:65,failure:45,alarm:350};o.frequency.setValueAtTime(f[kind]||250,c.currentTime);o.frequency.exponentialRampToValueAtTime(Math.max(30,(f[kind]||250)*.5),c.currentTime+.14);g.gain.setValueAtTime(volume*.055,c.currentTime);g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+.18);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.2);o.onended=()=>{o.disconnect();g.disconnect();};}
+ close(){void this.ctx?.close();this.ctx=null;}
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "layout": "no-build",
+    "seconds": 87.98333333333333,
+    "bossSeen": false,
+    "alive": false,
+    "kills": 0,
+    "gold": 385
+  },
+  {
+    "layout": "strategy-1",
+    "seconds": 317.4,
+    "bossSeen": true,
+    "alive": false,
+    "kills": 105,
+    "gold": 32
+  },
+  {
+    "layout": "strategy-2",
+    "seconds": 323.51666666666665,
+    "bossSeen": true,
+    "alive": false,
+    "kills": 108,
+    "gold": 39
+  }
+]
