@@ -3,6 +3,8 @@ import {computed,onMounted,onUnmounted,ref,shallowRef,nextTick} from 'vue';
 import bundledConfig from '../../content/game-config.json' with {type:'json'};
 import {EVENTS} from './game/incidents';
 import {CAMPAIGNS,campaignIntel} from './game/campaigns';
+import LanGame from './components/LanGame.vue';
+const lanOpen=ref(new URLSearchParams(location.search).has('lan'));
 import CampaignMap from './components/CampaignMap.vue';
 import ChangeLog from './components/ChangeLog.vue';
 import changelog from '../../content/changelog.json';
@@ -85,9 +87,10 @@ onUnmounted(()=>{cancelAnimationFrame(raf);window.removeEventListener('resize',r
 </script>
 
 <template>
- <main :class="['app',ui.page,{'reduced-motion':ui.settings.reducedMotion,'expanded-layout':ui.settings.layout!=='classic'}]">
+ <LanGame v-if="lanOpen" :config="(config||bundledConfig) as Config" @close="lanOpen=false" @achievement="ui.settings.falseEndingAchievement=true;saveSettings()" />
+ <main v-else :class="['app',ui.page,{'reduced-motion':ui.settings.reducedMotion,'expanded-layout':ui.settings.layout!=='classic'}]">
   <header class="topbar"><a class="brand" @click="ui.page==='game'?openModal('pause'):null"><span class="brand-mark">▥</span> 战墙 <small>WARWALL</small></a><div class="top-center"><span class="live-dot"></span> {{ui.page==='game'?'防御指挥终端 / SECTOR 01':'单机无限生存 / ENDLESS DEFENSE'}}</div><button class="text-button" @click="openModal('settings')">⚙ 设置</button></header>
-  <template v-if="ui.page==='menu'">
+  <template v-if="ui.page==='menu'"><button class="primary" @click="ui.modal='';lanOpen=true">局域网联机 · 合作作战</button>
    <section class="menu-content"><div class="menu-copy"><div class="eyebrow"><span></span> 最后防线 · 01</div><h1>筑起高墙。<br>守住<span>最后的光。</span></h1><p class="intro">从天而降的堡垒，无休无止的进攻。<br>建造、发展、重构防线，让核心再多跳动一秒。</p><label class="difficulty-choice">战局难度 <select v-model="chosenDifficulty" aria-label="新局难度"><option v-for="(name,id) in difficultyNames" :value="id">{{name}}</option></select><small>所有模式与难度：玩家子弹、箭矢和炮弹穿透全部友方建筑。</small></label><label class="check"><input v-model="chosenTest" type="checkbox">测试模式：10 分钟后开启左侧战场</label><div class="menu-actions"><button class="primary" :disabled="!ready||busy" @click="newGame">{{busy?'正在创建…':'建立新防线'}} <span>↗</span></button><button :disabled="!ready||!saved" @click="continueGame">继续防守 <span>{{saved?clock(saved.tick/60):'暂无存档'}}</span></button></div><button class="campaign-entry" :disabled="!config" @click="openModal('campaign')">故事战役 · 黎明计划 <span>{{ui.settings.campaignCleared}} / 5 已通关 ↗</span></button><div class="menu-links"><button class="changelog-entry" @click="openModal('changelog')">更新日志 · v{{changelog.version}} ↗</button><button :disabled="!config" @click="openModal('bestiary')">怪物图鉴 ↗</button><button @click="history">历史战绩 ↗</button><button @click="openModal('tutorial')">操作说明 ↗</button></div><div class="status"><span class="live-dot"></span>{{ui.saveStatus}}</div><p v-if="error" class="error">{{error}} <button @click="boot">重试连接</button><button v-if="saved" @click="exportSave">导出存档</button></p></div>
    <div class="fortress-art" aria-label="工业堡垒插画"><div class="art-grid"></div><div class="art-title">防线档案 <span>WW—001</span></div><div class="moon"></div><div class="far-city"><i v-for="n in 14" :key="n" :style="{height:(25+n*17%90)+'px'}"></i></div><div class="tower t1"><div class="gun"></div><b>➶</b><b>▥</b><b>▥</b></div><div class="tower t2"><div class="gun"></div><b>◒</b><b>◎</b><b>▥</b><b>▥</b><b>▥</b></div><div class="tower t3"><b>⌁</b><b>▥</b></div><div class="reactor"><span>✧</span><small>CORE / ONLINE</small></div><div class="ground"></div><div class="art-tag"><span class="live-dot"></span> 核心在线 <strong>100%</strong></div><div class="art-bottom">重力搭建 / 持续生存 <span>36 × 16</span></div></div>
    </section><footer><span>每一次坍塌，都是重建的开始。</span><span>作者：沈奕安 <i>•</i> V1.0 <i>•</i> 本地运行，无需账号</span></footer>

@@ -8,6 +8,15 @@ app.include_router(router)
 
 @app.middleware('http')
 async def size_limit(request:Request,call_next):
+    # LAN guests keep solo progress in their own browser, never in the host's slot.
+    if request.url.path.startswith('/api/v1/') and request.url.path != '/api/v1/config':
+        from ipaddress import ip_address
+        try:
+            remote = not ip_address(request.client.host).is_loopback
+        except ValueError:
+            remote = False
+        if remote:
+            return JSONResponse({'error': {'code': 'LOCAL_ONLY', 'message': '单人存档服务仅限房主本机；队友使用浏览器本地存档。'}}, 403)
     if request.method in ['PUT','POST']:
         size=0
         chunks=[]
@@ -26,3 +35,11 @@ async def validation_error(request,exc): return JSONResponse({'error':{'code':'V
 
 @app.exception_handler(sqlite3.Error)
 async def storage_error(request,exc): return JSONResponse({'error':{'code':'STORAGE','message':'数据库写入失败，请保留本地副本后重试'}},500)
+
+from .lan import router as lan_router
+app.include_router(lan_router)
+from pathlib import Path
+from fastapi.staticfiles import StaticFiles
+frontend_dist = Path(__file__).resolve().parents[2] / 'frontend' / 'dist'
+if frontend_dist.is_dir():
+    app.mount('/', StaticFiles(directory=frontend_dist, html=True), name='game')

@@ -2,7 +2,7 @@
 name = "warwall"
 version = "1.0.0"
 requires-python = ">=3.11"
-dependencies = ["fastapi", "uvicorn", "pydantic"]
+dependencies = ["fastapi", "uvicorn", "pydantic", "websockets>=15,<18"]
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
