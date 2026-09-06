@@ -28,7 +28,14 @@ export function drawHarborReveal(c:CanvasRenderingContext2D,e:Engine,s:number,X:
  if(layer==='weather'&&m.storm){
   c.fillStyle='#06182f30';c.fillRect(X(0),Y(16),36*s,16*s);c.strokeStyle='#b5d9ed70';c.lineWidth=1;
   for(let i=0;i<(reduced?65:180);i++){const x=((i*7.37+(reduced?0:e.time*5))%38)-1,y=(i*3.71+(reduced?0:e.time*14))%17;c.beginPath();c.moveTo(X(x),Y(16-y));c.lineTo(X(x-.18),Y(16-y-.8));c.stroke();}
-  const phase=e.time%11;if(!reduced&&phase<.2){c.fillStyle=`rgba(177,214,240,${.15*(1-phase/.2)})`;c.fillRect(X(0),Y(16),36*s,16*s);c.strokeStyle='#d5f6ff';c.lineWidth=2;c.beginPath();c.moveTo(X(29),Y(16));c.lineTo(X(27.6),Y(13.7));c.lineTo(X(28.6),Y(13.8));c.lineTo(X(26),Y(10));c.stroke();}
+  const phase=e.time%11;if(!reduced&&phase<1.4){
+   const intensity=Math.pow(1-phase/1.4,1.3);c.fillStyle=`rgba(177,214,240,${.2*intensity})`;c.fillRect(X(0),Y(16),36*s,16*s);
+   const cycle=Math.floor(e.time/11),base=27+(cycle%3)*2;
+   c.save();c.globalAlpha=intensity;c.shadowColor='#b9e9ff';c.shadowBlur=10;c.strokeStyle='#dff8ff';c.lineWidth=3;
+   const bolt=(points:number[][])=>{c.beginPath();points.forEach(([x,y],i)=>i?c.lineTo(X(x),Y(y)):c.moveTo(X(x),Y(y)));c.stroke();};
+   bolt([[base,16],[base-1.4,14],[base-.5,14.2],[base-2.5,11.4],[base-1.9,11.6],[base-3.3,8.5]]);
+   c.lineWidth=1.5;bolt([[base-1.4,14],[base-3,13.4],[base-4,11.8]]);bolt([[base-2.5,11.4],[base-.2,10.8],[base+.8,9.3]]);c.restore();
+  }
  }
  c.restore();
 }

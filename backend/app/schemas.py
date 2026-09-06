@@ -114,14 +114,21 @@ class SalvageCrate(BaseModel):
 
 class CampaignState(BaseModel):
     timelineVersion: Literal[2, 3] | None = None
-    revealFrame: int | None = Field(None, ge=0, le=720)
+    revealFrame: int | None = Field(None, ge=-600, le=720)
     carrierCrashed: bool = False
     storm: bool = False
     stage: int = Field(ge=0, le=4)
     spawned: int = Field(0, ge=0, le=3)
     won: bool = False
 
+class Projection(BaseModel):
+    owner: int = Field(gt=0)
+    x: Finite = Field(ge=-32, le=36)
+    y: Finite = Field(ge=0, le=16)
+    remaining: Finite = Field(gt=0, le=9)
+
 class Snapshot(BaseModel):
+    projection: Projection | None = None
     campaign: CampaignState | None = None
     testMode: bool = False
     leftOpened: bool = False
@@ -142,7 +149,7 @@ class Snapshot(BaseModel):
     nextEntityId: int = Field(gt=0)
     revision: int = Field(ge=0)
     tick: int = Field(ge=0)
-    gold: int = Field(ge=0)
+    gold: Finite = Field(ge=0)
     coreHp: Finite = Field(gt=0, le=3000)
     maxThreat: int = Field(ge=1)
     kills: int = Field(ge=0)
@@ -167,6 +174,8 @@ class Snapshot(BaseModel):
 
     @model_validator(mode='after')
     def references(self):
+        if self.projection and not any(b.id==self.projection.owner and b.type=='decoy' and b.settled for b in self.buildings):
+            raise ValueError('投影缺少有效的发生器')
         from .config import config
         from .balance import migrate
         migrate(self,config)

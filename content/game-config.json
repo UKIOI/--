@@ -422,6 +422,36 @@
           "interval": 1.4
         }
       ]
+    },
+    "decoy": {
+      "name": "诱饵投影塔",
+      "icon": "◇",
+      "cost": 220,
+      "hp": 280,
+      "impact": 20,
+      "damage": 0,
+      "interval": 20,
+      "range": 12,
+      "description": "限造 1 座 · 每 20 秒在远处投影 6 秒，诱导附近普通敌人",
+      "minRange": 0,
+      "radius": 0,
+      "production": 6,
+      "slow": 0.35,
+      "slowDuration": 2,
+      "boost": 0,
+      "thorns": 0,
+      "upgradeCost": 160,
+      "branches": [
+        {
+          "name": "持久幻象",
+          "production": 9
+        },
+        {
+          "name": "快速重投",
+          "interval": 14
+        }
+      ],
+      "limit": 1
     }
   },
   "enemies": {
@@ -705,8 +735,8 @@
       "unlock": 360,
       "weight": 1,
       "air": false,
-      "width": 2.6,
-      "height": 2.8,
+      "width": 1.8,
+      "height": 2,
       "armor": 0.1,
       "boss": false
     },
@@ -868,13 +898,14 @@
     "crateReward": 150,
     "fortressCap": 2,
     "fortressDropEvery": 18,
-    "fortressCrashDamage": 320,
+    "fortressCrashDamage": 180,
     "fortressCrashRadius": 4,
     "commandRange": 14,
     "shieldCoverRadius": 3.2,
     "shieldCoverShare": 0.8,
     "squadSize": 3,
-    "squadWait": 10
+    "squadWait": 10,
+    "fortressStructureDamageScale": 0.5
   },
   "balanceRevision": 2
 }

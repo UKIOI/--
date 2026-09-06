@@ -42,7 +42,8 @@
     "sniper",
     "amplifier",
     "crane",
-    "interceptor"
+    "interceptor",
+    "decoy"
   ],
   "enemies": [
     "grunt",

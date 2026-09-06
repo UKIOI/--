@@ -91,7 +91,8 @@
     "newBuildings": [
       "cannon",
       "bridge",
-      "frost"
+      "frost",
+      "decoy"
     ],
     "newEnemies": [
       "siege",
@@ -115,7 +116,8 @@
       "mortar",
       "cannon",
       "bridge",
-      "frost"
+      "frost",
+      "decoy"
     ],
     "enemies": [
       "grunt",
@@ -166,7 +168,8 @@
       "bridge",
       "frost",
       "sniper",
-      "amplifier"
+      "amplifier",
+      "decoy"
     ],
     "enemies": [
       "grunt",
@@ -228,7 +231,8 @@
       "sniper",
       "amplifier",
       "crane",
-      "interceptor"
+      "interceptor",
+      "decoy"
     ],
     "enemies": [
       "grunt",

@@ -307,6 +307,17 @@ export interface components {
             /** Columns */
             columns: number[];
         };
+        /** Projection */
+        Projection: {
+            /** Owner */
+            owner: number;
+            /** X */
+            x: number;
+            /** Y */
+            y: number;
+            /** Remaining */
+            remaining: number;
+        };
         /** Run */
         Run: {
             /** Runid */
@@ -468,6 +479,7 @@ export interface components {
         };
         /** Snapshot */
         Snapshot: {
+            projection?: components["schemas"]["Projection"] | null;
             campaign?: components["schemas"]["CampaignState"] | null;
             /**
              * Testmode

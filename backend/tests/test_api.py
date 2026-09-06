@@ -14,7 +14,7 @@ def snapshot():
 def test_config_and_health(client):
     assert client.get('/api/v1/health').json()['status']=='ok'
     c=client.get('/api/v1/config').json()
-    assert len(c['buildings'])==13 and len(c['enemies'])==20
+    assert len(c['buildings'])==14 and len(c['enemies'])==20
     assert c['buildings']['wall']['hp']==720
 
 def test_save_revision_and_restart(client):
@@ -202,3 +202,19 @@ def test_runs_idempotent_only_clear_matching(client):
     assert client.get('/api/v1/save').status_code==204
     assert client.get('/api/v1/save').headers['X-Save-Revision']=='2'
     assert len(client.get('/api/v1/runs').json()['items'])==2
+
+def test_fractional_economy_save(client):
+    s=snapshot();s["gold"]=301.5
+    assert client.put("/api/v1/save",json={"expectedRevision":0,"snapshot":s}).status_code==200
+    assert client.get("/api/v1/save").json()["snapshot"]["gold"]==301.5
+
+def test_projection_checkpoint(client):
+    s=snapshot()
+    s['buildings']=[dict(id=1,type='decoy',branch=-1,spent=220,x=10.5,y=.5,v=0,hp=280,settled=True,fallId=1,hit=[],cooldown=18)]
+    s['nextEntityId']=2
+    s['projection']=dict(owner=1,x=29,y=1,remaining=4)
+    r=client.put('/api/v1/save',json={'expectedRevision':0,'snapshot':s})
+    assert r.status_code==200,r.text
+    assert client.get('/api/v1/save').json()['snapshot']['projection']==s['projection']
+    s['projection']['owner']=99
+    assert client.put('/api/v1/save',json={'expectedRevision':1,'snapshot':s}).status_code==422

@@ -15,3 +15,9 @@ def test_new_reveal_fields_require_the_new_finale(client):
     s=snapshot()
     s['campaign']=dict(stage=4,timelineVersion=2,spawned=2,carrierCrashed=True,revealFrame=0)
     assert client.put('/api/v1/save',json={'expectedRevision':0,'snapshot':s}).status_code==422
+
+def test_aftermath_negative_checkpoint_roundtrip(client):
+    s=snapshot()
+    s.update(campaign=dict(stage=4,timelineVersion=3,spawned=2,won=False,carrierCrashed=True,revealFrame=-500,storm=False),tick=37000,bossCount=2,bossKills=2)
+    assert client.put('/api/v1/save',json={'expectedRevision':0,'snapshot':s}).status_code==200
+    assert client.get('/api/v1/save').json()['snapshot']['campaign']['revealFrame']==-500
