@@ -9,7 +9,7 @@ it('simulates a full hour under a sustained artificial stress load',async()=>{
  for(let tick=0;tick<216000;tick++){
   // This is an artificial workload, not a claimed survival or balance result.
   e.s.coreHp=1_000_000_000;if(e.s.candidates.length)e.choose(e.s.candidates[0]);
-  if(tick%600===0){while(e.s.enemies.filter(x=>!e.config.enemies[x.type].boss).length<180)e.spawn(tick%1200===0?'siege':'flyer',false);}
+  if(tick%600===0){while(e.s.enemies.filter(x=>!e.config.enemies[x.type].boss).length<180)e.spawn(tick%1200===0?'siege':'flyer',false,35.5,undefined,true);}
   if(tick%3600===0){for(let c=3;c<23;c++){if(!e.s.buildings.some(b=>Math.floor(b.x)===c)){for(let h=0;h<7;h++)add(e,c,h,kinds[(c+h)%8]);}}}
   const t=performance.now();e.step();totalMs+=performance.now()-t;
   maxBuildings=Math.max(maxBuildings,e.s.buildings.length);maxEnemies=Math.max(maxEnemies,e.s.enemies.length);maxShots=Math.max(maxShots,e.s.shots.length);maxEffects=Math.max(maxEffects,e.effects.length);

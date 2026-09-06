@@ -14,7 +14,7 @@ def snapshot():
 def test_config_and_health(client):
     assert client.get('/api/v1/health').json()['status']=='ok'
     c=client.get('/api/v1/config').json()
-    assert len(c['buildings'])==11 and len(c['enemies'])==16
+    assert len(c['buildings'])==13 and len(c['enemies'])==19
     assert c['buildings']['wall']['hp']==720
 
 def test_save_revision_and_restart(client):
@@ -40,10 +40,80 @@ def test_validation_and_size(client):
 def test_settings(client):
     assert client.get('/api/v1/settings').json()['musicVolume']==.3
     s=dict(musicVolume=.2,sfxVolume=.5,reducedMotion=True,tutorialSeen=True)
-    assert client.put('/api/v1/settings',json=s).json()==s
-    assert TestClient(app).get('/api/v1/settings').json()==s
+    assert client.put('/api/v1/settings',json=s).json()=={**s,'background':'city','layout':'expanded','campaignCleared':0}
+    assert TestClient(app).get('/api/v1/settings').json()=={**s,'background':'city','layout':'expanded','campaignCleared':0}
     s['sfxVolume']=2
     assert client.put('/api/v1/settings',json=s).status_code==422
+
+def test_left_front_save_requires_unlocked_test_mode(client):
+    s=snapshot()
+    s.update(testMode=True,leftOpened=True,tick=36000,nextLeft=620,nextEntityId=3)
+    s['buildings']=[dict(id=1,type='wall',branch=-1,spent=45,x=-9.5,y=.5,v=0,hp=720,settled=True,fallId=1,hit=[],cooldown=0)]
+    s['enemies']=[dict(id=2,type='grunt',side='left',x=-25,y=.5,hp=50,maxHp=50,shield=0,armor=0,attackScale=1,speedScale=1,reward=10,elite='',cooldown=0,slows=[],skill=0,summon=0,state='walk',timer=0,distance=0,target=1)]
+    s['commands']=[dict(type='drop',kind='wall',column=-8)]
+    result=client.put('/api/v1/save',json={'expectedRevision':0,'snapshot':s})
+    assert result.status_code==200,result.text
+    loaded=client.get('/api/v1/save').json()['snapshot']
+    assert loaded['buildings'][0]['x']==-9.5 and loaded['enemies'][0]['side']=='left'
+    assert loaded['nextLeft']==620 and loaded['testMode']
+    s['testMode']=False
+    assert client.put('/api/v1/save',json={'expectedRevision':1,'snapshot':s}).status_code==422
+    s['testMode']=True
+    s['tick']=35999
+    assert client.put('/api/v1/save',json={'expectedRevision':1,'snapshot':s}).status_code==422
+
+def test_layout_and_squads_persist(client):
+    assert client.put('/api/v1/settings',json={'layout':'classic'}).status_code==200
+    assert client.get('/api/v1/settings').json()['layout']=='classic'
+    assert client.put('/api/v1/settings',json={'layout':'unknown'}).status_code==422
+    s=snapshot()
+    s['squads']=[[],[],[],[],[]]
+    assert client.put('/api/v1/save',json={'expectedRevision':0,'snapshot':s}).status_code==200
+    assert client.get('/api/v1/save').json()['snapshot']['squads']==s['squads']
+    s['squads']=[[0]]
+    assert client.put('/api/v1/save',json={'expectedRevision':1,'snapshot':s}).status_code==422
+
+def test_background_settings_persist_and_validate(client):
+    for background in ['city','harbor','desert','snow','classic']:
+        response=client.put('/api/v1/settings',json={'background':background})
+        assert response.status_code==200
+        assert TestClient(app).get('/api/v1/settings').json()['background']==background
+    assert client.put('/api/v1/settings',json={'background':'unknown'}).status_code==422
+    assert client.get('/api/v1/settings').json()['background']=='classic'
+
+def test_tactical_entities_and_lift_command_persist(client):
+    s=snapshot()
+    s['enemies']=[dict(id=1,type='carrier',x=20,y=10,hp=1000,maxHp=1000,shield=0,armor=0,attackScale=1,speedScale=1,reward=200,elite='',cooldown=0,slows=[],skill=0,summon=0,state='walk',timer=0,distance=0,target=0,parts=dict(hangar=0,missiles=90,max=180),weakUntil=20)]
+    s['shots']=[dict(id=2,owner=2147483646,kind='wreck',phase='warning',x=10,y=0,originX=10,originY=9,remaining=2,duration=3,damage=450,radius=4)]
+    s['buildings']=[dict(id=3,type='interceptor',branch=-1,spent=210,x=5.5,y=.5,v=0,hp=260,settled=True,fallId=1,hit=[],cooldown=2)]
+    s['crate']=dict(x=20.5,y=1.6,hp=350,remaining=30,progress=10,falling=False)
+    s['commands']=[dict(type='relocate',id=3,column=7,layer=0)]
+    s['event']=dict(kind='supply',remaining=5,columns=[20])
+    s['nextEntityId']=4
+    response=client.put('/api/v1/save',json={'expectedRevision':0,'snapshot':s})
+    assert response.status_code==200, response.text
+    loaded=client.get('/api/v1/save').json()['snapshot']
+    assert loaded['enemies'][0]['parts']['hangar']==0 and loaded['enemies'][0]['weakUntil']==20
+    assert loaded['shots'][0]['kind']=='wreck' and loaded['crate']['progress']==10
+    assert loaded['commands'][0]['type']=='relocate'
+    assert loaded['commands'][0]['layer']==0
+    s['commands'][0]['layer']=12
+    assert client.put('/api/v1/save',json={'expectedRevision':1,'snapshot':s}).status_code==422
+    s['commands'][0]['layer']=0
+    s['commands'][0]['column']=30
+    assert client.put('/api/v1/save',json={'expectedRevision':1,'snapshot':s}).status_code==422
+
+def test_fortress_and_squad_persistence(client):
+    s=snapshot()
+    base=dict(x=25,y=7,hp=100,maxHp=100,shield=0,armor=0,attackScale=1,speedScale=1,reward=20,elite='',cooldown=0,slows=[],skill=0,summon=4,state='walk',timer=0,distance=0,target=0)
+    s['enemies']=[dict(base,id=1,type='marshal'),dict(base,id=2,type='fortress'),dict(base,id=3,type='suicide_ship',state='rally',timer=8,squad=1)]
+    s['shots']=[dict(id=4,owner=2147483646,kind='wreck',visual='fortress',phase='warning',x=10,y=0,originX=10,originY=7,remaining=2,duration=3,damage=320,radius=4)]
+    s['nextEntityId']=5
+    result=client.put('/api/v1/save',json={'expectedRevision':0,'snapshot':s})
+    assert result.status_code==200, result.text
+    loaded=client.get('/api/v1/save').json()['snapshot']
+    assert loaded['enemies'][2]['squad']==1 and loaded['enemies'][2]['state']=='rally'
+    assert loaded['shots'][0]['visual']=='fortress'
 
 @pytest.mark.parametrize('state', ['burrow', 'erupt', 'exposed'])
 @pytest.mark.parametrize('event', ['meteor', 'breach', 'sabotage', 'siege'])

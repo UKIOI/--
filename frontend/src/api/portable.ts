@@ -1,6 +1,7 @@
 import config from '../../../content/game-config.json' with {type:'json'};
 import {ApiError} from './error';
-const defaults={musicVolume:.3,sfxVolume:.7,reducedMotion:false,tutorialSeen:false};
+import {normalizeBackground} from '../game/render/backgrounds';
+const defaults={musicVolume:.3,sfxVolume:.7,reducedMotion:false,tutorialSeen:false,campaignCleared:0,layout:'expanded',background:'city'};
 interface Store {revision:number;snapshot:any;savedAt:string|null;settings:typeof defaults;runs:any[]}
 const initial=():Store=>({revision:0,snapshot:null,savedAt:null,settings:{...defaults},runs:[]});
 /** A separate local database: never imports a developer's save or contacts a server. */
@@ -11,8 +12,8 @@ export async function portableApi<T>(path:string,method='GET',body?:unknown):Pro
   const tx=db.transaction('state',method==='GET'?'readonly':'readwrite'),store=tx.objectStore('state'),read=store.get('game');let answer:{data:T;revision:number};let failure:unknown;
   read.onsuccess=()=>{try{const s:Store=read.result??initial(),b=body as any,url=new URL(path,'https://offline.invalid'),key=url.pathname;let data:any=null;
    if(key==='/settings'){
-    if(method==='PUT'){if(!b||!Number.isFinite(b.musicVolume)||!Number.isFinite(b.sfxVolume)||b.musicVolume<0||b.musicVolume>1||b.sfxVolume<0||b.sfxVolume>1)throw new ApiError(422,'音量必须在 0 到 1 之间');s.settings={musicVolume:b.musicVolume,sfxVolume:b.sfxVolume,reducedMotion:!!b.reducedMotion,tutorialSeen:!!b.tutorialSeen};}
-    else if(method!=='GET')throw new ApiError(405,'操作不支持');data=s.settings;
+    if(method==='PUT'){if(!b||!Number.isFinite(b.musicVolume)||!Number.isFinite(b.sfxVolume)||b.musicVolume<0||b.musicVolume>1||b.sfxVolume<0||b.sfxVolume>1)throw new ApiError(422,'音量必须在 0 到 1 之间');s.settings={musicVolume:b.musicVolume,sfxVolume:b.sfxVolume,reducedMotion:!!b.reducedMotion,tutorialSeen:!!b.tutorialSeen,campaignCleared:Math.max(s.settings.campaignCleared??0,Math.max(0,Math.min(5,Math.floor(Number(b.campaignCleared)||0)))),layout:b.layout==='classic'?'classic':'expanded',background:normalizeBackground(b.background)};}
+    else if(method!=='GET')throw new ApiError(405,'操作不支持');data={...defaults,...s.settings,background:normalizeBackground(s.settings.background)};
    }else if(key==='/save'){
     if(method==='PUT'){
      if(b?.expectedRevision!==s.revision)throw new ApiError(409,'存档已在其他窗口更新，请选择要保留的进度');

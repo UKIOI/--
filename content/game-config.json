@@ -362,6 +362,66 @@
       ],
       "limit": 20,
       "easyLimit": 20
+    },
+    "crane": {
+      "impact": 35,
+      "damage": 0,
+      "minRange": 0,
+      "radius": 0,
+      "production": 0,
+      "slow": 0,
+      "slowDuration": 0,
+      "boost": 0,
+      "thorns": 0,
+      "name": "吊装站",
+      "icon": "⚒",
+      "description": "花费 35 金币将附近建筑直接移至指定空格，可放入桥梁下方。起点和落点须在范围内，落点需要稳定支撑；保留生命、升级和冷却。",
+      "cost": 150,
+      "hp": 320,
+      "interval": 30,
+      "range": 7,
+      "upgradeCost": 110,
+      "branches": [
+        {
+          "name": "长臂吊装",
+          "range": 10,
+          "hp": 400
+        },
+        {
+          "name": "快速吊装",
+          "interval": 18
+        }
+      ]
+    },
+    "interceptor": {
+      "impact": 35,
+      "damage": 0,
+      "minRange": 0,
+      "radius": 0,
+      "production": 0,
+      "slow": 0,
+      "slowDuration": 0,
+      "boost": 0,
+      "thorns": 0,
+      "name": "拦截阵列",
+      "icon": "⌖",
+      "description": "每 2.4 秒拦截射程内一枚飞行中的炸弹、导弹或小型陨石。无法拦截激光、震波和母舰残骸，密集齐射可突破。最多 4 座。",
+      "cost": 210,
+      "hp": 260,
+      "interval": 2.4,
+      "range": 7,
+      "limit": 4,
+      "upgradeCost": 140,
+      "branches": [
+        {
+          "name": "广域雷达",
+          "range": 10
+        },
+        {
+          "name": "速射拦截",
+          "interval": 1.4
+        }
+      ]
     }
   },
   "enemies": {
@@ -604,6 +664,51 @@
       "height": 2.5,
       "armor": 0.1,
       "boss": true
+    },
+    "suicide_ship": {
+      "name": "自爆飞船",
+      "hp": 110,
+      "speed": 4.2,
+      "damage": 240,
+      "interval": 1.5,
+      "reward": 18,
+      "unlock": 240,
+      "weight": 3,
+      "air": true,
+      "width": 1.5,
+      "height": 0.8,
+      "armor": 0.05,
+      "boss": false
+    },
+    "fortress": {
+      "name": "空中堡垒",
+      "hp": 1800,
+      "speed": 0.65,
+      "damage": 0,
+      "interval": 18,
+      "reward": 110,
+      "unlock": 420,
+      "weight": 1,
+      "air": true,
+      "width": 3.8,
+      "height": 2.5,
+      "armor": 0.2,
+      "boss": false
+    },
+    "burrow_nest": {
+      "name": "地渊孵化兽",
+      "hp": 2200,
+      "speed": 0,
+      "damage": 180,
+      "interval": 8,
+      "reward": 140,
+      "unlock": 360,
+      "weight": 1,
+      "air": false,
+      "width": 2.6,
+      "height": 2.8,
+      "armor": 0.15,
+      "boss": false
     }
   },
   "perks": {
@@ -734,7 +839,27 @@
     "mineStackPenalty": 0.22,
     "sabotageDamage": 145,
     "eliteGrowth": 0.006,
-    "lateHeavyGrowth": 1
+    "lateHeavyGrowth": 1,
+    "craneCost": 35,
+    "carrierParts": 0.18,
+    "carrierCrashDamage": 450,
+    "carrierCrashRadius": 4,
+    "carrierCrashWarning": 3,
+    "carrierCrashFlight": 3,
+    "suicideRadius": 1.65,
+    "crateHp": 350,
+    "crateDuration": 45,
+    "crateCollect": 20,
+    "crateReward": 150,
+    "fortressCap": 2,
+    "fortressDropEvery": 18,
+    "fortressCrashDamage": 320,
+    "fortressCrashRadius": 4,
+    "commandRange": 14,
+    "shieldCoverRadius": 2.6,
+    "shieldCoverShare": 0.7,
+    "squadSize": 3,
+    "squadWait": 10
   },
   "balanceRevision": 2
 }

@@ -1,6 +1,6 @@
 import type {Config,World} from './types';
 import {api,ApiError,localPut} from '../api/client';
-export function validateSnapshot(s:World,c:Config){if(!s||s.schemaVersion!==1||s.configVersion!==c.configVersion||!Array.isArray(s.buildings)||!Array.isArray(s.enemies)||!s.alive||s.coreHp<=0||s.rng<=0)throw Error('存档版本或内容不兼容。请导出备份后新开游戏。');if(s.buildings.some(b=>!c.buildings[b.type])||s.enemies.some(e=>!c.enemies[e.type]))throw Error('存档含未知实体');return s;}
+export function validateSnapshot(s:World,c:Config){if(!s||s.schemaVersion!==1||s.configVersion!==c.configVersion||!Array.isArray(s.buildings)||!Array.isArray(s.enemies)||!s.alive||s.coreHp<=0||s.rng<=0)throw Error('存档版本或内容不兼容。请导出备份后新开游戏。');if(s.buildings.some(b=>!c.buildings[b.type])||s.enemies.some(e=>!c.enemies[e.type]))throw Error('存档含未知实体');if(!(s.testMode&&s.tick>=36000)&&(s.buildings.some(b=>b.x<0)||s.enemies.some(e=>e.x<0||e.side==='left')))throw Error('左侧战场尚未开放');return s;}
 export class SaveQueue {
  pending:World|null=null;busy:Promise<boolean>|null=null;revision=0;blocked=false;
  constructor(public status:(message:string)=>void,public conflict:()=>void,public updated:(revision:number)=>void){}

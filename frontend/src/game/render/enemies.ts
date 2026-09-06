@@ -3,13 +3,17 @@ import {enemyDetail} from './enemy-detail';
 /** Shared normalized silhouettes used by combat and the field guide. */
 export function drawEnemy(c:CanvasRenderingContext2D,type:string,x:number,y:number,w:number,h:number,time=0,reduced=false,attack=0,state='walk'){
  if(drawNewBoss(c,type,x,y,w,h,time,reduced,state))return;
- c.save();c.translate(x,y);c.scale(w,h);c.lineJoin='round';c.lineCap='round';const air=['flyer','bombardier','carrier'].includes(type);const phase=time*(type==='runner'?15:7),walk=reduced?0:Math.sin(phase)*.08;const pulse=reduced?0:Math.sin(time*3)*.018;c.translate(reduced?0:-Math.sin(Math.min(1,attack/.3)*Math.PI)*.16,air?walk*.5:-Math.abs(walk)*.3);c.scale(1+pulse,1-pulse);if(state==='charge'&&!reduced)c.rotate(Math.sin(time*35)*.04);if(state==='fuse'){c.scale(1+Math.abs(walk),1+Math.abs(walk));}
+ c.save();c.translate(x,y);c.scale(w,h);c.lineJoin='round';c.lineCap='round';const air=['flyer','bombardier','carrier','suicide_ship','fortress'].includes(type);const phase=time*(type==='runner'?15:7),walk=reduced?0:Math.sin(phase)*.08;const pulse=reduced?0:Math.sin(time*3)*.018;c.translate(reduced?0:-Math.sin(Math.min(1,attack/.3)*Math.PI)*.16,air?walk*.5:-Math.abs(walk)*.3);c.scale(1+pulse,1-pulse);if(state==='charge'&&!reduced)c.rotate(Math.sin(time*35)*.04);if(state==='fuse'){c.scale(1+Math.abs(walk),1+Math.abs(walk));}
  const ink='#18231f',bone='#eee0b9',metal='#72857d';
  const poly=(p:number[][],fill:string)=>{c.beginPath();p.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.closePath();c.fillStyle=fill;c.fill();c.strokeStyle=ink;c.lineWidth=.045;c.stroke();};
  const line=(p:number[][],color:string,width=.06)=>{c.beginPath();p.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.strokeStyle=color;c.lineWidth=width;c.stroke();};
  const oval=(x:number,y:number,rx:number,ry:number,color:string)=>{c.beginPath();c.ellipse(x,y,rx,ry,0,0,Math.PI*2);c.fillStyle=color;c.fill();};
  const step=reduced?0:Math.sin(time*9)*.07;
- if(['marshal','leaper','blastbeetle','reflector','spitter'].includes(type)){
+ if(type==='burrow_nest'){if(state==='burrow'){oval(0,.35,.55,.08,'#ecb375');line([[-.5,.35],[-.2,.25],[0,.37],[.25,.28],[.5,.35]],'#ffdc96',.05);}else{for(const side of [-1,1])for(let i=0;i<3;i++)line([[side*.22,i*.15-.05],[side*.48,i*.15-.2],[side*.55,i*.12+.2]],'#b19b73',.09);oval(0,.1,.37,.4,'#636b42');for(const px of [-.2,0,.2])for(const py of [-.1,.14])oval(px,py,.09,.12,'#c8d97e');poly([[-.34,-.2],[-.2,-.5],[.22,-.5],[.35,-.18],[0,-.08]],'#a59b79');oval(0,-.25,.18,.13,'#18291d');line([[-.12,-.4],[.12,-.4]],'#ffe694',.055);}}else if(type==='fortress'){
+  for(const side of [-1,1]){poly([[side*.16,-.37],[side*.48,-.3],[side*.52,.26],[side*.22,.38]],'#536e78');for(const py of [-.2,.16]){oval(side*.4,py,.12,.13,ink);oval(side*.4,py,.075,.09,'#83e1e1');line([[side*.4,py+.07],[side*.4,py+.21+Math.abs(walk)]],'#91eeed',.055);}}
+  poly([[-.34,-.32],[.1,-.42],[.34,-.2],[.32,.2],[.06,.35],[-.36,.2],[-.51,-.02]],'#9eaa9d');poly([[-.45,-.04],[-.25,-.2],[.02,-.16],[-.06,.02],[-.4,.06]],'#253e49');line([[-.38,-.06],[-.13,-.1]],'#ffd49a',.04);
+  poly([[-.17,.03],[.23,.03],[.21,.28],[-.15,.28]],'#27383c');for(const px of [-.09,.04,.17]){line([[px,.07],[px,.23]],'#dfb276',.035);oval(px,.28,.035,.035,'#f6c16c');}poly([[-.08,-.34],[.06,-.57],[.2,-.34]],'#657e80');line([[.07,-.49],[.07,-.66]],'#dcead3',.025);
+ }else if(type==='suicide_ship'){poly([[-.52,0],[-.1,-.19],[.38,-.12],[.48,0],[.38,.12],[-.1,.19]],'#af8170');poly([[-.12,-.14],[.2,-.5],[.34,-.08]],'#597d80');poly([[-.12,.14],[.2,.5],[.34,.08]],'#597d80');oval(-.22,0,.11,.1,'#ffb580');line([[.45,0],[.7+(reduced?0:Math.abs(walk)),0]],'#ffd789',.13);}else if(['marshal','leaper','blastbeetle','reflector','spitter'].includes(type)){
  const tone=type==='marshal'?'#bc9ace':type==='leaper'?'#d9b476':type==='blastbeetle'?'#bd9982':type==='reflector'?'#88c8d1':'#a5bf70';
  for(const side of [-1,1])for(let i=0;i<3;i++)line([[side*.15,-.2+i*.18],[side*(.38+walk),-.12+i*.19],[side*.5,.03+i*.19]],tone,.06);
  if(type==='leaper'){if(state==='leap')c.translate(0,-Math.sin(Math.max(0,(time*5)%Math.PI))*.35);poly([[-.48,-.08],[-.1,-.32],[.38,-.17],[.27,.2],[-.33,.16]],tone);line([[.2,.1],[.52,-.03],[.4,.44]],bone,.11);}
@@ -39,14 +43,17 @@ export function drawEnemy(c:CanvasRenderingContext2D,type:string,x:number,y:numb
  }enemyDetail(c,type,time,reduced);c.restore();
 }
 export const enemyLore:Record<string,{role:string;behavior:string;counter:string}>={
+ burrow_nest:{role:'地底孵化精英',behavior:'6 分钟后出现，基础生命 2200、护甲 15%，最多同时 2 只。锁定建筑底部，预警 4 秒后破土，直接摧毁本体出土范围内建筑并造成周边范围伤害，释放 6 只虫；之后每 8 秒生成 3 只。',counter:'潜地时无法攻击；按预警吊装关键设施，出土后用单体火力优先消灭本体，阻止持续增援。'},
  sandworm:{role:'地下 Boss',behavior:'巨型沙虫锁定建筑下方，预警 5 秒后逐层钻出，摧毁三列通道内全部建筑；暴露 12 秒后再次潜地。',counter:'预警时回收高价值建筑，分散阵地；沙虫出土后集中地面火力。潜地时不可被攻击。'},
  queen:{role:'虫巢 Boss',behavior:'定期繁殖跃袭兽、隔爆甲兽等虫群，并向三处目标喷射酸液。',counter:'范围火力处理幼虫，用单体火力攻击女王，防止后排被酸液消耗。'},
  tempest:{role:'雷暴 Boss',behavior:'巨翼雷兽在空中蓄积电能，预警后发动三处落雷及等离子弹。',counter:'广域防空覆盖空域，分散高层建筑，注意落雷提示。'},
- marshal:{role:'散阵指挥',behavior:'信号触须指挥附近地面怪物拉开间距，降低爆炸收益。',counter:'手控狙击塔优先击杀；拥堵时仍会聚集。'},
+ marshal:{role:'协同指挥',behavior:'14 格内组织部队靠拢护盾，空中堡垒吸引自动防空火力；自爆飞船积攒 3 艘或等待 10 秒后齐袭同一高价值目标。没有护盾时保持散阵。',counter:'优先狙杀指挥虫可解除掩护，迫使集结飞船提前出击；手动防空可绕过堡垒诱饵。'},
+ fortress:{role:'重型空投平台',behavior:'7 分钟后出现，基础生命 1800、护甲 20%，最多同时 2 艘。进入战区后空投 4 只地面虫，之后每 18 秒增援；被击毁后预警坠落，爆炸也伤害地面虫群。',counter:'利用坠爆清理下方虫群；撤离残骸落点。指挥虫在场时堡垒会吸引自动防空，手动瞄准可攻击其他空中敌人。'},
  leaper:{role:'机动突袭',behavior:'周期性短跃避开固定炮击落点，落地会短暂停顿；不会跳过城墙。',counter:'箭塔持续输出，冰霜塔减缓跳跃。'},
  blastbeetle:{role:'隔爆重甲',behavior:'爆炸伤害降低 50%，移动缓慢。',counter:'箭塔与狙击塔没有额外伤害减免。'},
- reflector:{role:'炮弹反射',behavior:'护盾存在时反弹范围内的迫击炮或加农炮弹，反射消耗护盾，返还 65% 炮弹伤害。',counter:'先用箭矢、狙击或冰霜破盾；破盾后无法反射。'},
+ reflector:{role:'炮弹反射',behavior:'护盾存在时反弹范围内的迫击炮或加农炮弹，反射消耗护盾，返还 65% 炮弹伤害。指挥虫在场时，为 2.6 格内地面部队承担 70% 伤害，消耗自身护盾。',counter:'先用箭矢、狙击或冰霜破盾；破盾后无法反射。'},
  spitter:{role:'远程酸液',behavior:'在 6.5 格内停下并从口器吐出实体酸液，命中建筑后小范围溅射。',counter:'狙击远程清除，前墙可挡住酸液。'},
+ suicide_ship:{role:'高速自爆飞船',behavior:'高速进入战场，优先锁定累计投入最高的设施，城墙与桥梁优先级最低。受指挥时会在堡垒后方集结，3 艘或等待 10 秒后齐袭。短暂预警后冲撞，命中造成范围爆炸。',counter:'用防空火力在冲撞前击毁，提前击落不会产生伤害爆炸。'},
  grunt:{role:'步行步兵',behavior:'披挂废铁面甲的前线步兵，遇到地面障碍便持续近战。',counter:'用城墙阻挡，再由有清晰射界的弩炮消灭。'},
  runner:{role:'高速猎手',behavior:'低伏的四肢和后掠骨刺让它迅速穿过防线缺口。',counter:'冰霜减速，配合连弩持续输出。'},
  bomber:{role:'接触自爆',behavior:'背负发光爆裂囊，接触障碍后蓄力 1.2 秒再爆炸。击杀不会引爆。',counter:'在蓄力结束前集火，避免将脆弱设施集中在最前排。'},
@@ -54,5 +61,5 @@ export const enemyLore:Record<string,{role:string;behavior:string;counter:string
  bombardier:{role:'空中轰炸',behavior:'双旋翼运输重型炸弹，优先锁定附近累计造价最高的落稳建筑。',counter:'防空塔拦截，留意落点预警，上层建筑先承受投弹。'},
  siege:{role:'装甲攻城',behavior:'履带底盘与正面重甲缓慢推进，自带 25% 护甲。',counter:'迫击炮与寒冷伤害无视护甲，维修站维持前墙。'},
  beast:{role:'地面 Boss',behavior:'骨角与重型护臂撕开防线。蓄力破城冲撞，还会踏地震波与投掷巨岩。',counter:'用加固墙承受冲撞，后排持续输出并维修。'},
- carrier:{role:'空中 Boss',behavior:'进入战区即准备释放三只护航怪与空降酸液虫。四枚强力导弹齐射，并轰炸最密集的连续三列，另有蓄能激光。',counter:'在母舰接近前部署防空，优先拦截护航与空降虫；分散关键设施，留意轰炸预警。'}
+ carrier:{role:'空中 Boss',behavior:'召唤护航、导弹齐射与地毯轰炸。可破坏机库和导弹舱；发射炸弹后核心短暂暴露。死亡后残骸预警坠落，造成大范围高伤爆炸。',counter:'火控面板选择部位，用防空拆除武器；核心暴露时集火。母舰被击毁后仍须撤离残骸下方，吊装站可搬走关键建筑。'}
 };

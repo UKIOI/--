@@ -1,0 +1,249 @@
+[
+  {
+    "title": "余烬哨站",
+    "map": "旧日荒原",
+    "background": "classic",
+    "difficulty": "easy",
+    "gold": 450,
+    "bossAt": 150,
+    "bosses": [
+      "beast"
+    ],
+    "newBuildings": [
+      "wall",
+      "ballista",
+      "mine",
+      "repair"
+    ],
+    "newEnemies": [
+      "grunt",
+      "runner"
+    ],
+    "events": [],
+    "story": "陨落后的第三十七夜，人类只剩一座仍在跳动的地脉核心。你接过最后一支工程队，必须在荒原守住电力，才能唤醒通往城市的铁路。",
+    "hint": "先用城墙挡住地面，再部署箭塔和维修站。投放建筑也能砸击敌人。巨兽接近时分散后排，注意冲撞与震波。",
+    "outro": "荒原的烟囱重新亮起。第一班列车驶向灰烬之城，幸存者终于有了回家的方向。",
+    "buildings": [
+      "wall",
+      "ballista",
+      "mine",
+      "repair"
+    ],
+    "enemies": [
+      "grunt",
+      "runner"
+    ]
+  },
+  {
+    "title": "重燃城市",
+    "map": "灰烬之城",
+    "background": "city",
+    "difficulty": "easy",
+    "gold": 500,
+    "bossAt": 180,
+    "bosses": [
+      "queen"
+    ],
+    "newBuildings": [
+      "anti_air",
+      "mortar"
+    ],
+    "newEnemies": [
+      "bomber",
+      "flyer",
+      "leaper",
+      "blastbeetle"
+    ],
+    "events": [
+      "supply",
+      "airdrop"
+    ],
+    "story": "城市的地下管网已经变成虫巢。工程队找到了失落的防空图纸，但必须先消灭占据中枢的虫后，城市才能重新向其他据点供能。",
+    "hint": "本关解锁防空塔和迫击炮。飞行虫需要防空，虫后繁殖的小虫适合范围火力处理；空降单位落地后改用地面武器。",
+    "outro": "中枢信标点亮，远处沙海传回了第二座核心的坐标。你带着新的武器图纸，向黄沙深处出发。",
+    "buildings": [
+      "wall",
+      "ballista",
+      "mine",
+      "repair",
+      "anti_air",
+      "mortar"
+    ],
+    "enemies": [
+      "grunt",
+      "runner",
+      "bomber",
+      "flyer",
+      "leaper",
+      "blastbeetle"
+    ]
+  },
+  {
+    "title": "沙海回声",
+    "map": "黄沙旧都",
+    "background": "desert",
+    "difficulty": "normal",
+    "gold": 550,
+    "bossAt": 210,
+    "bosses": [
+      "sandworm"
+    ],
+    "newBuildings": [
+      "cannon",
+      "bridge",
+      "frost"
+    ],
+    "newEnemies": [
+      "siege",
+      "marshal",
+      "reflector",
+      "spitter"
+    ],
+    "events": [
+      "breach",
+      "meteor"
+    ],
+    "story": "旧都被沙丘吞没，地下却仍有脉冲回应。巨型沙虫沿着能源管线猎食。只有守住遗址并击败它，才能找到通往北方雷达站的地下通道。",
+    "hint": "本关解锁加农炮、桥梁和冰霜塔。护甲虫会反弹炮弹，先用箭矢破盾。沙虫潜地不可攻击，红色通道内的建筑会被摧毁，提前回收。",
+    "outro": "沙虫停止了翻涌，地下通道终于安静下来。来自北方的雷达图，揭示了敌军真正的集结点。",
+    "buildings": [
+      "wall",
+      "ballista",
+      "mine",
+      "repair",
+      "anti_air",
+      "mortar",
+      "cannon",
+      "bridge",
+      "frost"
+    ],
+    "enemies": [
+      "grunt",
+      "runner",
+      "bomber",
+      "flyer",
+      "leaper",
+      "blastbeetle",
+      "siege",
+      "marshal",
+      "reflector",
+      "spitter"
+    ]
+  },
+  {
+    "title": "长夜雷达",
+    "map": "凛冬禁区",
+    "background": "snow",
+    "difficulty": "normal",
+    "gold": 600,
+    "bossAt": 240,
+    "bosses": [
+      "tempest"
+    ],
+    "newBuildings": [
+      "sniper",
+      "amplifier"
+    ],
+    "newEnemies": [
+      "bombardier",
+      "suicide_ship"
+    ],
+    "events": [
+      "missiles",
+      "siege"
+    ],
+    "story": "凛冬封住了道路，却封不住天空中的雷暴。你必须保护最后一座远程雷达，击落盘旋其上的巨兽，定位海港上空的入侵母舰。",
+    "hint": "本关解锁狙击塔与增幅器。狙击塔不能对空，仍需防空塔处理雷暴巨兽。双击同类塔或 Ctrl+A 快速接管，注意落雷和自爆飞船。",
+    "outro": "雷暴散去，雷达屏幕第一次完整显示了海岸线。母舰正向港湾汇聚——这是终结入侵的最后窗口。",
+    "buildings": [
+      "wall",
+      "ballista",
+      "mine",
+      "repair",
+      "anti_air",
+      "mortar",
+      "cannon",
+      "bridge",
+      "frost",
+      "sniper",
+      "amplifier"
+    ],
+    "enemies": [
+      "grunt",
+      "runner",
+      "bomber",
+      "flyer",
+      "leaper",
+      "blastbeetle",
+      "siege",
+      "marshal",
+      "reflector",
+      "spitter",
+      "bombardier",
+      "suicide_ship"
+    ]
+  },
+  {
+    "title": "黎明归航",
+    "map": "沉没港湾",
+    "background": "harbor",
+    "difficulty": "hard",
+    "gold": 750,
+    "bossAt": 300,
+    "bosses": [
+      "carrier",
+      "queen"
+    ],
+    "newBuildings": [
+      "crane",
+      "interceptor"
+    ],
+    "newEnemies": [
+      "fortress",
+      "burrow_nest"
+    ],
+    "events": [
+      "supply",
+      "missiles",
+      "airdrop",
+      "meteor",
+      "sabotage",
+      "breach",
+      "siege"
+    ],
+    "story": "海雾中，母舰与最后的虫后共同守卫入侵通道。五地的幸存者把仅存资源交给了你。守住核心，同时击败两名统领，为撤离船队争取真正的黎明。",
+    "hint": "全建筑解锁。困难模式只有子弹穿城墙，抬高箭塔和炮位。用吊装站撤离危险设施，用拦截阵列挡弹；母舰与虫后同时登场，击败两者并躲过残骸坠爆才能胜利。",
+    "outro": "母舰沉入海面，虫巢信号归于寂静。荒原、城市、沙海与雪原的灯火沿海岸依次亮起。你守住的不再是一座核心，而是所有人重新开始的机会。",
+    "buildings": [
+      "wall",
+      "ballista",
+      "mine",
+      "repair",
+      "anti_air",
+      "mortar",
+      "cannon",
+      "bridge",
+      "frost",
+      "sniper",
+      "amplifier",
+      "crane",
+      "interceptor"
+    ],
+    "enemies": [
+      "grunt",
+      "runner",
+      "bomber",
+      "flyer",
+      "leaper",
+      "blastbeetle",
+      "siege",
+      "marshal",
+      "reflector",
+      "spitter",
+      "bombardier",
+      "suicide_ship",
+      "fortress",
+      "burrow_nest"
+    ]
+  }
+]

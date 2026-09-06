@@ -7,6 +7,9 @@ class Settings(BaseModel):
     sfxVolume: float = Field(.7, ge=0, le=1)
     reducedMotion: bool = False
     tutorialSeen: bool = False
+    campaignCleared: int = Field(0, ge=0, le=5)
+    layout: Literal["expanded", "classic"] = "expanded"
+    background: Literal["city", "harbor", "desert", "snow", "classic"] = "city"
 
 class BuildingConfig(BaseModel):
     model_config = ConfigDict(extra='allow')
@@ -32,7 +35,7 @@ class Building(BaseModel):
     type: str
     branch: int = Field(ge=-1, le=1)
     spent: int = Field(ge=0)
-    x: Finite = Field(ge=.5, le=23.5)
+    x: Finite = Field(ge=-19.5, le=23.5)
     y: Finite = Field(ge=.5, le=16)
     v: Finite = Field(ge=0, le=18)
     hp: Finite = Field(gt=0)
@@ -45,14 +48,23 @@ class Slow(BaseModel):
     amount: Finite = Field(ge=0, le=1)
     until: Finite = Field(ge=0)
 
+class CarrierParts(BaseModel):
+    hangar: Finite = Field(ge=0)
+    missiles: Finite = Field(ge=0)
+    max: Finite = Field(gt=0)
+
 class Enemy(BaseModel):
+    side: Literal["left"] | None = None
+    squad: int | None = Field(None, gt=0)
+    parts: CarrierParts | None = None
+    weakUntil: Finite | None = None
     descent: bool = False
     special: Finite | None = None
     secondary: Finite | None = None
     attackAnim: Finite = Field(0, ge=0, le=1)
     id: int = Field(gt=0)
     type: str
-    x: Finite = Field(ge=0, le=40)
+    x: Finite = Field(ge=-32, le=40)
     y: Finite = Field(ge=0, le=16)
     hp: Finite = Field(gt=0)
     maxHp: Finite = Field(gt=0)
@@ -61,12 +73,12 @@ class Enemy(BaseModel):
     attackScale: Finite = Field(gt=0)
     speedScale: Finite = Field(gt=0, le=1.3)
     reward: int = Field(ge=0)
-    elite: Literal['', 'shield', 'armor']
+    elite: Literal['', 'shield', 'armor', 'brood']
     cooldown: Finite = Field(ge=0)
     slows: list[Slow]
     skill: Finite
     summon: Finite
-    state: Literal['walk', 'charge', 'dash', 'fuse', 'leap', 'recover', 'burrow', 'erupt', 'exposed']
+    state: Literal['walk', 'charge', 'dash', 'fuse', 'leap', 'recover', 'burrow', 'erupt', 'exposed', 'rally']
     timer: Finite
     distance: Finite
     target: int
@@ -78,7 +90,7 @@ class Shot(BaseModel):
     originY: Finite | None = None
     id: int = Field(gt=0)
     owner: int = Field(gt=0)
-    kind: Literal['mortar', 'bomb', 'cannon', 'arrow', 'bullet', 'rock', 'shockwave', 'laser']
+    kind: Literal['mortar', 'bomb', 'cannon', 'arrow', 'bullet', 'rock', 'shockwave', 'laser', 'wreck']
     x: Finite
     y: Finite
     remaining: Finite = Field(gt=0)
@@ -87,11 +99,30 @@ class Shot(BaseModel):
     radius: Finite = Field(ge=0)
 
 class Incident(BaseModel):
-    kind: Literal['missiles', 'airdrop', 'meteor', 'breach', 'sabotage', 'siege']
+    kind: Literal['missiles', 'airdrop', 'meteor', 'breach', 'sabotage', 'siege', 'supply']
     remaining: Finite = Field(gt=0, le=6)
     columns: list[Annotated[int, Field(ge=0, le=23)]] = Field(max_length=3)
 
+class SalvageCrate(BaseModel):
+    x: Finite = Field(ge=-19.5, le=23.5)
+    y: Finite = Field(ge=0, le=16)
+    hp: Finite = Field(gt=0)
+    remaining: Finite = Field(gt=0, le=45)
+    progress: Finite = Field(ge=0, le=20)
+    falling: bool
+
+class CampaignState(BaseModel):
+    stage: int = Field(ge=0, le=4)
+    spawned: int = Field(0, ge=0, le=2)
+    won: bool = False
+
 class Snapshot(BaseModel):
+    campaign: CampaignState | None = None
+    testMode: bool = False
+    leftOpened: bool = False
+    nextLeft: Finite | None = Field(None, ge=0)
+    squads: list[Annotated[list[Annotated[int, Field(gt=0)]], Field(max_length=572)]] = Field(default_factory=list, max_length=5)
+    crate: SalvageCrate | None = None
     balanceRevision: int = Field(1, ge=1, le=2)
     difficulty: Literal['easy', 'normal', 'hard'] = 'easy'
     nextEvent: Finite | None = None
@@ -112,8 +143,8 @@ class Snapshot(BaseModel):
     kills: int = Field(ge=0)
     bossKills: int = Field(ge=0)
     alive: Literal[True]
-    buildings: list[Building] = Field(max_length=312)
-    enemies: list[Enemy] = Field(max_length=181)
+    buildings: list[Building] = Field(max_length=572)
+    enemies: list[Enemy] = Field(max_length=182)
     shots: list[Shot] = Field(max_length=2000)
     spawnCredit: Finite = Field(ge=0, lt=1.01)
     bossRequests: int = Field(ge=0, le=1)
@@ -134,26 +165,44 @@ class Snapshot(BaseModel):
         from .config import config
         from .balance import migrate
         migrate(self,config)
+        if self.campaign and self.testMode:
+            raise ValueError("战役不能同时启用双线测试")
+        if self.campaign:
+            from .campaigns import CAMPAIGNS
+            chapter=CAMPAIGNS[self.campaign.stage]
+            required=len(chapter['bosses'])
+            if self.campaign.spawned>required or any(b.type not in chapter['buildings'] for b in self.buildings):
+                raise ValueError('战役解锁状态非法')
+            if any(e.type not in chapter['enemies']+chapter['bosses'] for e in self.enemies):
+                raise ValueError('本关敌人尚未解锁')
+            if self.campaign.won and (self.bossKills<required or self.campaign.spawned!=required or any(config['enemies'].get(e.type,{}).get('boss') for e in self.enemies)):
+                raise ValueError('战役尚未完成')
+        if len(self.enemies)>181 and not (self.campaign and self.campaign.stage==4):
+            raise ValueError('敌人数量超限')
+        left=self.testMode and self.tick>=36000
+        minimum=-20 if left else 0
+        if not left and (self.leftOpened or self.nextLeft is not None):
+            raise ValueError("左侧战场尚未开放")
         ids=[x.id for x in [*self.buildings,*self.enemies,*self.shots]]
         if len(ids)!=len(set(ids)) or any(i>=self.nextEntityId for i in ids):
             raise ValueError('实体 ID 重复或 nextEntityId 非法')
         for b in self.buildings:
-            if b.type not in config['buildings'] or b.x % 1 != .5 or (b.settled and (b.y % 1 != .5 or b.y>11.5)):
+            if b.x<minimum+.5 or b.type not in config['buildings'] or b.x % 1 != .5 or (b.settled and (b.y % 1 != .5 or b.y>11.5)):
                 raise ValueError('建筑类型或网格位置非法')
             base=config['buildings'][b.type]
             maximum=base['branches'][b.branch].get('hp',base['hp']) if b.branch>=0 else base['hp']
             if b.hp>maximum*(1+.15*self.perks.get('durability',0))+.00001:
                 raise ValueError('建筑生命超过上限')
-        for col in range(24):
+        for col in range(minimum,24):
             top=2 if col in [1,2] else 0
-            for b in sorted([b for b in self.buildings if int(b.x)==col],key=lambda b:b.y):
+            for b in sorted([b for b in self.buildings if b.x//1==col],key=lambda b:b.y):
                 if b.y-.5<top-.00001:
                     raise ValueError('建筑相互重叠或与核心重叠')
                 top=b.y+.5
         for e in self.enemies:
-            if e.type not in config['enemies'] or e.hp>e.maxHp:
+            if (not left and (e.x<0 or e.side=='left')) or e.type not in config['enemies'] or e.hp>e.maxHp:
                 raise ValueError('敌人类型或生命非法')
-        if sum(config['enemies'][e.type]['boss'] for e in self.enemies)>1:
+        if sum(config['enemies'][e.type]['boss'] for e in self.enemies)>(2 if self.campaign and self.campaign.stage==4 else 1):
             raise ValueError('Boss 数量非法')
         for k,v in self.perks.items():
             if k not in config['perks'] or v<0 or v>config['perks'][k]['max']:
@@ -162,13 +211,18 @@ class Snapshot(BaseModel):
             raise ValueError('强化候选非法')
         for c in self.commands:
             if c.get('type')=='drop':
-                if c.get('kind') not in config['buildings'] or not isinstance(c.get('column'),int) or not 0<=c['column']<24:
+                if c.get('kind') not in config['buildings'] or not isinstance(c.get('column'),int) or not minimum<=c['column']<24:
                     raise ValueError('投放命令非法')
                 if c.get('kind')=='bridge' and (not isinstance(c.get('layer'),int) or not 0<=c['layer']<12):
                     raise ValueError('桥梁层数非法')
             elif c.get('type')=='upgradeMany':
-                if c.get('branch') not in [0,1] or not isinstance(c.get('ids'),list) or len(c['ids'])>312 or any(i not in [b.id for b in self.buildings] for i in c['ids']):
+                if c.get('branch') not in [0,1] or not isinstance(c.get('ids'),list) or len(c['ids'])>572 or any(i not in [b.id for b in self.buildings] for i in c['ids']):
                     raise ValueError('批量升级引用非法')
+            elif c.get('type')=='relocate':
+                if c.get('id') not in [b.id for b in self.buildings] or not isinstance(c.get('column'),int) or not minimum<=c['column']<24:
+                    raise ValueError('吊装目标非法')
+                if 'layer' in c and (not isinstance(c['layer'],int) or not 0<=c['layer']<12):
+                    raise ValueError('吊装高度非法')
             elif c.get('type')=='upgrade':
                 if c.get('branch') not in [0,1] or c.get('id') not in [b.id for b in self.buildings]:
                     raise ValueError('升级引用非法')

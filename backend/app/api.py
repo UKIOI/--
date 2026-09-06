@@ -53,7 +53,11 @@ def get_settings():
 
 @router.put('/settings',response_model=Settings)
 def put_settings(value:Settings):
-    with connect() as db: db.execute('INSERT OR REPLACE INTO settings VALUES(1,?)',(value.model_dump_json(),))
+    with connect() as db:
+        row=db.execute('SELECT value_json FROM settings WHERE id=1').fetchone()
+        if row:
+            value.campaignCleared=max(value.campaignCleared,json.loads(row[0]).get('campaignCleared',0))
+        db.execute('INSERT OR REPLACE INTO settings VALUES(1,?)',(value.model_dump_json(),))
     return value
 
 @router.get('/runs',response_model=Runs)

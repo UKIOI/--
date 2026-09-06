@@ -145,8 +145,39 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** CampaignState */
+        CampaignState: {
+            /** Stage */
+            stage: number;
+            /**
+             * Spawned
+             * @default 0
+             */
+            spawned: number;
+            /**
+             * Won
+             * @default false
+             */
+            won: boolean;
+        };
+        /** CarrierParts */
+        CarrierParts: {
+            /** Hangar */
+            hangar: number;
+            /** Missiles */
+            missiles: number;
+            /** Max */
+            max: number;
+        };
         /** Enemy */
         Enemy: {
+            /** Side */
+            side?: "left" | null;
+            /** Squad */
+            squad?: number | null;
+            parts?: components["schemas"]["CarrierParts"] | null;
+            /** Weakuntil */
+            weakUntil?: number | null;
             /**
              * Descent
              * @default false
@@ -187,7 +218,7 @@ export interface components {
              * Elite
              * @enum {string}
              */
-            elite: "" | "shield" | "armor";
+            elite: "" | "shield" | "armor" | "brood";
             /** Cooldown */
             cooldown: number;
             /** Slows */
@@ -200,7 +231,7 @@ export interface components {
              * State
              * @enum {string}
              */
-            state: "walk" | "charge" | "dash" | "fuse" | "leap" | "recover" | "burrow" | "erupt" | "exposed";
+            state: "walk" | "charge" | "dash" | "fuse" | "leap" | "recover" | "burrow" | "erupt" | "exposed" | "rally";
             /** Timer */
             timer: number;
             /** Distance */
@@ -256,7 +287,7 @@ export interface components {
              * Kind
              * @enum {string}
              */
-            kind: "missiles" | "airdrop" | "meteor" | "breach" | "sabotage" | "siege";
+            kind: "missiles" | "airdrop" | "meteor" | "breach" | "sabotage" | "siege" | "supply";
             /** Remaining */
             remaining: number;
             /** Columns */
@@ -301,6 +332,21 @@ export interface components {
             /** Bestscore */
             bestScore: number;
         };
+        /** SalvageCrate */
+        SalvageCrate: {
+            /** X */
+            x: number;
+            /** Y */
+            y: number;
+            /** Hp */
+            hp: number;
+            /** Remaining */
+            remaining: number;
+            /** Progress */
+            progress: number;
+            /** Falling */
+            falling: boolean;
+        };
         /** SaveMeta */
         SaveMeta: {
             /** Revision */
@@ -344,6 +390,23 @@ export interface components {
              * @default false
              */
             tutorialSeen: boolean;
+            /**
+             * Campaigncleared
+             * @default 0
+             */
+            campaignCleared: number;
+            /**
+             * Layout
+             * @default expanded
+             * @enum {string}
+             */
+            layout: "expanded" | "classic";
+            /**
+             * Background
+             * @default city
+             * @enum {string}
+             */
+            background: "city" | "harbor" | "desert" | "snow" | "classic";
         };
         /** Shot */
         Shot: {
@@ -363,7 +426,7 @@ export interface components {
              * Kind
              * @enum {string}
              */
-            kind: "mortar" | "bomb" | "cannon" | "arrow" | "bullet" | "rock" | "shockwave" | "laser";
+            kind: "mortar" | "bomb" | "cannon" | "arrow" | "bullet" | "rock" | "shockwave" | "laser" | "wreck";
             /** X */
             x: number;
             /** Y */
@@ -386,6 +449,22 @@ export interface components {
         };
         /** Snapshot */
         Snapshot: {
+            campaign?: components["schemas"]["CampaignState"] | null;
+            /**
+             * Testmode
+             * @default false
+             */
+            testMode: boolean;
+            /**
+             * Leftopened
+             * @default false
+             */
+            leftOpened: boolean;
+            /** Nextleft */
+            nextLeft?: number | null;
+            /** Squads */
+            squads?: number[][];
+            crate?: components["schemas"]["SalvageCrate"] | null;
             /**
              * Balancerevision
              * @default 1
