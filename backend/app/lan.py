@@ -23,7 +23,7 @@ def lan_addresses():
 
 @router.get('/api/lan/status')
 async def status():
-    return {'version': '1.0.0', 'capacity': 4}
+    return {'version': '1.1.0', 'capacity': 4}
 
 async def send(ws, data):
     try:
@@ -48,8 +48,8 @@ async def connect(ws: WebSocket):
         if len(raw) > 2048:
             return
         hello = json.loads(raw)
-        if not isinstance(hello, dict) or hello.get('version') != '1.0.0':
-            await send(ws, {'type': 'error', 'message': '请使用相同的 1.0.0 版本联机。'})
+        if not isinstance(hello, dict) or hello.get('version') != '1.1.0':
+            await send(ws, {'type': 'error', 'message': '请使用相同的 1.1.0 版本联机。'})
             return
         if hello.get('type') == 'create':
             code = secrets.token_hex(3).upper()

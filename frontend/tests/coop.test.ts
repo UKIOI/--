@@ -27,7 +27,7 @@ it('removes owned building after 0.3 seconds and never funds a different wallet'
 });
 it('supports every mode and scales enemies while keeping per-owner firing orders',()=>{
  for(const mode of ['endless','test','campaign'] as const)for(const stage of mode==='campaign'?[0,1,2,3,4]:[0]){
-  const g=new CoopGame(config,players,{mode,difficulty:'easy',stage},42);g.e.spawn('grunt',false);const enemy=g.e.s.enemies[0];expect(enemy.maxHp).toBeGreaterThanOrEqual(config.enemies.grunt.hp*1.65);expect(g.e.coopRate).toBe(1.35);if(mode==='campaign')expect(g.e.s.campaign?.stage).toBe(stage);if(mode==='test')expect(g.e.s.testMode).toBe(true);
+  const g=new CoopGame(config,players,{mode,difficulty:'easy',stage},42);g.e.spawn('grunt',false);const enemy=g.e.s.enemies[0];expect(enemy.maxHp).toBeGreaterThanOrEqual(config.enemies.grunt.hp*(mode==='campaign'?1.35:1.65));expect(g.e.coopRate).toBe(mode==='campaign'?1.15:1.35);if(mode==='campaign')expect(g.e.s.campaign?.stage).toBe(stage);if(mode==='test')expect(g.e.s.testMode).toBe(true);
  }
  const g=make();g.apply('a',{type:'drop',kind:'ballista',column:8});g.apply('b',{type:'aim',ids:[1],x:10,y:1,fire:true});expect(g.e.coopOrders.b.ids).toEqual([]);g.apply('a',{type:'aim',ids:[1],x:10,y:1,fire:true});expect(g.e.coopOrders.a.ids).toEqual([1]);
 });

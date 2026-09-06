@@ -8,12 +8,12 @@ def test_room_relay_and_identity(monkeypatch):
     app.include_router(router)
     with TestClient(app) as client:
         with client.websocket_connect('/api/lan') as host:
-            host.send_json({'type': 'create', 'version': '1.0.0', 'name': 'Host'})
+            host.send_json({'type': 'create', 'version': '1.1.0', 'name': 'Host'})
             welcome = host.receive_json()
             assert welcome['type'] == 'welcome'
             host.receive_json()
             with client.websocket_connect('/api/lan') as guest:
-                guest.send_json({'type': 'join', 'version': '1.0.0', 'code': welcome['code'], 'name': 'Guest'})
+                guest.send_json({'type': 'join', 'version': '1.1.0', 'code': welcome['code'], 'name': 'Guest'})
                 joined = guest.receive_json()
                 roster = guest.receive_json()['players']
                 assert len(roster) == 2 and roster[0]['color'] != roster[1]['color']
