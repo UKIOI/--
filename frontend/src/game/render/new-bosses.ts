@@ -1,4 +1,6 @@
+import {drawTidalBoss} from './tidal-boss';
 export function drawNewBoss(c:CanvasRenderingContext2D,type:string,x:number,y:number,w:number,h:number,time:number,reduced:boolean,state:string){
+ if(type==='leviathan'){drawTidalBoss(c,x,y,w,h,time,reduced);return true;}
  if(!['sandworm','queen','tempest'].includes(type))return false;c.save();c.translate(x,y);c.scale(w,h);c.lineJoin='round';const wave=reduced?0:Math.sin(time*4)*.035;
  const poly=(points:number[][],color:string)=>{c.beginPath();points.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.closePath();c.fillStyle=color;c.fill();c.strokeStyle='#15221e';c.lineWidth=.025;c.stroke();};
  const oval=(x:number,y:number,rx:number,ry:number,color:string)=>{c.fillStyle=color;c.beginPath();c.ellipse(x,y,rx,ry,0,0,Math.PI*2);c.fill();};

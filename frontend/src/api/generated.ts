@@ -147,6 +147,20 @@ export interface components {
         };
         /** CampaignState */
         CampaignState: {
+            /** Timelineversion */
+            timelineVersion?: (2 | 3) | null;
+            /** Revealframe */
+            revealFrame?: number | null;
+            /**
+             * Carriercrashed
+             * @default false
+             */
+            carrierCrashed: boolean;
+            /**
+             * Storm
+             * @default false
+             */
+            storm: boolean;
             /** Stage */
             stage: number;
             /**
@@ -395,6 +409,11 @@ export interface components {
              * @default 0
              */
             campaignCleared: number;
+            /**
+             * Falseendingachievement
+             * @default false
+             */
+            falseEndingAchievement: boolean;
             /**
              * Layout
              * @default expanded

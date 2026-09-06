@@ -9,7 +9,7 @@ export function drawEnemyAttacks(c:CanvasRenderingContext2D,e:Engine,s:number,X:
   ring(a.x,a.y-p.height/2,.7+p.width*.3,a.type==='carrier'?'#9acbdf55':'#ef956a55');
   if(a.type==='carrier'){const pulse=reduced?1:.75+Math.sin(e.time*4)*.2;c.globalAlpha=pulse;line(a.x-.9,a.y-.65,a.x-.9,a.y-1.3,'#9befd555',s*.12);line(a.x+.9,a.y-.65,a.x+.9,a.y-1.3,'#9befd555',s*.12);c.globalAlpha=1;}
  }
- const warningRows=new Map<number,number>();for(const shot of e.s.shots){if(!['bomb','rock','shockwave','laser'].includes(shot.kind))continue;
+ const warningRows=new Map<number,number>();for(const shot of e.s.shots){if(shot.visual==='tidal'||shot.visual==='depthcharge')continue;if(!['bomb','rock','shockwave','laser'].includes(shot.kind))continue;
   const color=shot.visual==='acid'?'#c5eb89':shot.visual==='reflected'?'#a4e6ff':shot.kind==='laser'?'#bfbcff':shot.kind==='shockwave'?'#ec9e6c':'#efba7e';
   if(shot.phase==='flight'){
    const t=Math.max(0,Math.min(1,1-shot.remaining/shot.duration)),p=enemyProjectilePosition(shot,t),prev=enemyProjectilePosition(shot,Math.max(0,t-.04));

@@ -1,0 +1,63 @@
+{
+  "title": "黎明归航",
+  "map": "沉没港湾",
+  "background": "harbor",
+  "difficulty": "hard",
+  "gold": 750,
+  "bossAt": 300,
+  "bosses": [
+    "carrier",
+    "queen"
+  ],
+  "newBuildings": [
+    "crane",
+    "interceptor"
+  ],
+  "newEnemies": [
+    "fortress",
+    "burrow_nest"
+  ],
+  "events": [
+    "supply",
+    "missiles",
+    "airdrop",
+    "meteor",
+    "sabotage",
+    "breach",
+    "siege"
+  ],
+  "story": "海雾中，母舰与最后的虫后共同守卫入侵通道。五地的幸存者把仅存资源交给了你。守住核心，同时击败两名统领，为撤离船队争取真正的黎明。",
+  "hint": "全建筑解锁。困难模式只有子弹穿城墙，抬高箭塔和炮位。用吊装站撤离危险设施，用拦截阵列挡弹；母舰与虫后同时登场，击败两者并躲过残骸坠爆才能胜利。",
+  "outro": "母舰沉入海面，虫巢信号归于寂静。荒原、城市、沙海与雪原的灯火沿海岸依次亮起。你守住的不再是一座核心，而是所有人重新开始的机会。",
+  "buildings": [
+    "wall",
+    "ballista",
+    "mine",
+    "repair",
+    "anti_air",
+    "mortar",
+    "cannon",
+    "bridge",
+    "frost",
+    "sniper",
+    "amplifier",
+    "crane",
+    "interceptor"
+  ],
+  "enemies": [
+    "grunt",
+    "runner",
+    "bomber",
+    "flyer",
+    "leaper",
+    "blastbeetle",
+    "siege",
+    "marshal",
+    "reflector",
+    "spitter",
+    "bombardier",
+    "suicide_ship",
+    "fortress",
+    "burrow_nest"
+  ]
+}

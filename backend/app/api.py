@@ -57,6 +57,7 @@ def put_settings(value:Settings):
         row=db.execute('SELECT value_json FROM settings WHERE id=1').fetchone()
         if row:
             value.campaignCleared=max(value.campaignCleared,json.loads(row[0]).get('campaignCleared',0))
+            value.falseEndingAchievement=value.falseEndingAchievement or json.loads(row[0]).get('falseEndingAchievement',False)
         db.execute('INSERT OR REPLACE INTO settings VALUES(1,?)',(value.model_dump_json(),))
     return value
 

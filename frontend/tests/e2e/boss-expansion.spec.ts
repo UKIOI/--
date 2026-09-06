@@ -5,7 +5,7 @@ const config=JSON.parse(readFileSync('../content/game-config.json','utf8'));
 for(const difficulty of ['easy','normal'] as const)test(`sniper limit and worm corridor warning are visible in ${difficulty}`,async({page},info)=>{
  const e=new Engine(config,123,'boss-ui');e.s.gold=2000;e.s.difficulty=difficulty;const limit=e.buildingLimit('sniper');
  for(let i=0;i<limit;i++)e.s.buildings.push({id:e.s.nextEntityId++,type:'sniper',branch:-1,spent:190,x:3.5+i,y:.5,v:0,hp:config.buildings.sniper.hp,settled:true,fallId:1,hit:[],cooldown:0});
- e.spawn('sandworm',false);e.step();
+ e.s.tick=900*60;e.s.nextBoss=e.s.nextEvent=e.s.nextPerk=99999;e.s.spawnCredit=-99999;e.spawn('sandworm',false);e.step();
  const errors:string[]=[];page.on('pageerror',error=>errors.push(error.message));
  await page.route('**/api/v1/**',r=>{const p=new URL(r.request().url()).pathname;const data=p.endsWith('/config')?config:p.endsWith('/save')?{revision:0,snapshot:e.snapshot()}:p.endsWith('/settings')?{musicVolume:0,sfxVolume:0,reducedMotion:true,tutorialSeen:true}:null;return r.fulfill({status:data?200:204,contentType:'application/json',body:data?JSON.stringify(data):undefined});});
  await page.goto('/');await page.getByRole('button',{name:/继续防守/}).click();

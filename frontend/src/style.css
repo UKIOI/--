@@ -14,3 +14,13 @@
 .campaign-map{display:flex;flex-direction:column;max-height:calc(100vh - 110px)}.campaign-map>p{margin-bottom:12px}.campaign-map nav,.campaign-map footer{flex-shrink:0}.campaign-map article{flex:1;min-height:0;overflow:auto;margin-top:12px;padding:12px}.campaign-map footer{margin-top:12px}
 
 .menu-links{flex-wrap:wrap;row-gap:12px}.menu-links .changelog-entry{color:#dfce99}.dialog:has(.changelog){width:min(790px,95vw)}
+
+.income-total{display:block;font-size:11px;color:#c7d49d;margin-top:3px}.economy-panel{padding:10px;margin:10px 0;border:1px solid #8d9b5e55;background:#a2b66b0a}.economy-panel b{font-size:12px;color:#d8dba6}.economy-panel dl{font-size:11px;margin:10px 0}.economy-panel small{font-size:10px;line-height:1.6;display:block;color:#99aa88}.economy-panel p{font-size:11px;margin:8px 0}
+
+.economy-panel summary{cursor:pointer;font-size:11px;color:#d8dba6}.economy-panel dt{line-height:1.5}.economy-panel dd{white-space:nowrap}.details:has(.economy-panel p) .empty-icon{display:none}
+
+.relief-note{color:#b9efcd!important}.mission-strip{flex-wrap:wrap}
+
+.cinematic-input-lock{position:fixed;inset:0;z-index:100;cursor:wait;display:flex;align-items:center;justify-content:center}.reveal-caption{position:absolute;top:8%;left:8%;right:8%;z-index:5;text-align:center;pointer-events:none;text-shadow:0 2px 15px #000,0 0 30px #061628}.reveal-caption small{color:#e5d69c;letter-spacing:5px}.reveal-caption h2{font-size:42px;color:#edeee2;margin:15px 0}.reveal-caption p{color:#bcd8df;font-size:13px}.cinematic-input-lock button{cursor:pointer;align-self:flex-end;margin-bottom:60px}
+
+.lord-health{position:fixed;z-index:25;top:4px;left:50%;transform:translateX(-50%);width:min(420px,40vw);height:27px;background:#081d29;border:1px solid #91d9dc;pointer-events:none;box-shadow:0 2px 12px #0009}.lord-health span{position:absolute;inset:0;text-align:center;font-size:12px;line-height:26px;color:#efffff;z-index:1;text-shadow:0 1px 3px #000}.lord-health i{display:block;height:100%;background:linear-gradient(90deg,#235c71,#40848a)}

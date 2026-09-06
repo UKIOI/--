@@ -14,7 +14,7 @@ def snapshot():
 def test_config_and_health(client):
     assert client.get('/api/v1/health').json()['status']=='ok'
     c=client.get('/api/v1/config').json()
-    assert len(c['buildings'])==13 and len(c['enemies'])==19
+    assert len(c['buildings'])==13 and len(c['enemies'])==20
     assert c['buildings']['wall']['hp']==720
 
 def test_save_revision_and_restart(client):
@@ -40,8 +40,8 @@ def test_validation_and_size(client):
 def test_settings(client):
     assert client.get('/api/v1/settings').json()['musicVolume']==.3
     s=dict(musicVolume=.2,sfxVolume=.5,reducedMotion=True,tutorialSeen=True)
-    assert client.put('/api/v1/settings',json=s).json()=={**s,'background':'city','layout':'expanded','campaignCleared':0}
-    assert TestClient(app).get('/api/v1/settings').json()=={**s,'background':'city','layout':'expanded','campaignCleared':0}
+    assert client.put('/api/v1/settings',json=s).json()=={**s,'background':'city','layout':'expanded','campaignCleared':0,'falseEndingAchievement':False}
+    assert TestClient(app).get('/api/v1/settings').json()=={**s,'background':'city','layout':'expanded','campaignCleared':0,'falseEndingAchievement':False}
     s['sfxVolume']=2
     assert client.put('/api/v1/settings',json=s).status_code==422
 

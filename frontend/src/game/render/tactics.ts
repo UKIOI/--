@@ -1,11 +1,14 @@
+import {drawTidalEffects} from './tidal-boss';
+import {drawQueenNests} from './queen-nest';
 import type {Engine} from '../engine';
 import {drawEnemy} from './enemies';
 import {enemyProjectilePosition} from '../enemy-projectiles';
 export function drawTactics(c:CanvasRenderingContext2D,e:Engine,s:number,X:(n:number)=>number,Y:(n:number)=>number,reduced:boolean,hover:number,layer:number){
+ drawQueenNests(c,e,s,X,Y,reduced);drawTidalEffects(c,e,s,X,Y,reduced);
  const line=(x:number,y:number,tx:number,ty:number,color:string,width=1)=>{c.strokeStyle=color;c.lineWidth=width;c.beginPath();c.moveTo(X(x),Y(y));c.lineTo(X(tx),Y(ty));c.stroke();};
  const label=(text:string,x:number,y:number,color='#f8cf97')=>{c.fillStyle=color;c.font='11px Microsoft YaHei';c.fillText(text,X(x),Y(y));};
  for(const a of e.s.enemies){if(a.type==='burrow_nest'){label(a.state==='burrow'?`孵化兽破土 ${Math.ceil(a.timer)}s`:`虫巢孵化 ${Math.ceil(Math.max(0,a.summon))}s`,Math.max(1,a.x-2),a.y+2,'#f3d191');if(a.state==='burrow'){c.fillStyle='#e4ab5c28';c.fillRect(X(a.x-1.5),Y(3),s*3,s*3);}}if(a.state==='erupt'&&a.type!=='sandworm'){label('破土中',a.x-.7,a.y+1,'#efc786');}if(a.type==='suicide_ship'&&a.state!=='walk'&&a.state!=='rally'){const target=e.s.buildings.find(b=>b.id===a.target&&b.hp>0)??{x:2,y:1};c.setLineDash([5,4]);line(a.x,a.y,target.x,target.y,'#ff8e6f',2);c.setLineDash([]);label(a.state==='charge'?`自爆冲撞 ${Math.max(0,a.timer).toFixed(1)}s`:'高速冲撞中',Math.min(29,a.x-1),a.y+1.2);}
-  if(a.type==='reflector'&&!a.descent&&a.shield>0&&e.commanderFor(a)){c.fillStyle='#7dddec15';c.strokeStyle='#8fe7ed80';c.lineWidth=1.5;c.beginPath();c.arc(X(a.x),Y(a.y),s*(e.config.schedule.shieldCoverRadius??2.6),0,Math.PI*2);c.fill();c.stroke();label('护盾掩护',a.x-1,a.y+3,'#a3edf0');}
+  if(a.type==='reflector'&&!a.descent&&a.hp>0&&a.shield>0){c.fillStyle='#7dddec15';c.strokeStyle='#8fe7ed80';c.lineWidth=1.5;c.beginPath();c.arc(X(a.x),Y(a.y),s*(e.config.schedule.shieldCoverRadius??2.6),0,Math.PI*2);c.fill();c.stroke();label(`护盾 ${Math.ceil(a.shield)} · 掩护 80%`,a.x-1.7,a.y+3.6,'#a3edf0');}
   if(a.type==='fortress'&&e.commanderFor(a))label('防空诱饵',a.x-1,a.y+1.8,'#ffcb86');
   if(a.type==='suicide_ship'&&a.state==='rally'){const group=e.s.enemies.filter(b=>b.state==='rally'&&b.squad===a.squad);if(group[0]?.id===a.id)label(`集结 ${group.length}/${e.config.schedule.squadSize??3} · ${Math.ceil(Math.max(0,Math.min(...group.map(b=>b.timer))))}s`,a.x-1,a.y+1.2,'#e1b6fc');const commander=e.s.enemies.find(b=>b.id===a.squad);if(commander){c.setLineDash([2,6]);line(a.x,a.y,commander.x,commander.y,'#dbadf550');c.setLineDash([]);}}
   if(a.type==='carrier'&&a.parts){for(const [i,key] of (['hangar','missiles'] as const).entries()){const x=a.x+(i===0?-.7:.7);c.fillStyle=a.parts[key]>0?'#8ae4ec':'#242c2b';c.fillRect(X(x)-5,Y(a.y)-3,10,6);label(key==='hangar'?'机库':'导弹',x-.5,a.y-.8,a.parts[key]>0?'#91dce3':'#a18579');}if(e.time<(a.weakUntil??0)){c.strokeStyle='#ffda81';c.lineWidth=3;c.beginPath();c.arc(X(a.x),Y(a.y),s*.4,0,Math.PI*2);c.stroke();label('核心暴露 ×1.6',a.x-1.4,a.y+1.8);}}

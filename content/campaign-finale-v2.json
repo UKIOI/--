@@ -1,0 +1,71 @@
+{
+  "title": "黎明归航",
+  "map": "沉没港湾",
+  "background": "harbor",
+  "difficulty": "hard",
+  "gold": 750,
+  "bossAt": 240,
+  "bosses": [
+    "queen",
+    "carrier",
+    "leviathan"
+  ],
+  "newBuildings": [
+    "crane",
+    "interceptor"
+  ],
+  "newEnemies": [
+    "fortress",
+    "burrow_nest"
+  ],
+  "events": [
+    "supply",
+    "missiles",
+    "airdrop",
+    "meteor",
+    "sabotage",
+    "breach",
+    "siege"
+  ],
+  "story": "撤离船队驶入沉没港湾，虫巢女王先行封锁海岸。海面之下，寄生于沉船的深渊潮汐领主正在苏醒，外星母舰将在十分钟后与它合围最后防线。守住核心，为船队打开归航之路。",
+  "hint": "4:00 虫巢女王登场；8:00—10:00 普通刷怪降至 35%，暂停新增突袭事件，抓紧修复与重建。10:00 外星母舰与深渊潮汐领主同时登场。潮汐落点预警后造成范围伤害，深水雷可拦截；半血狂潮加快施法。击败三名统领并撑过母舰坠落才能胜利。",
+  "outro": "母舰坠入海面，潮汐领主的沉船甲壳终于崩解，虫巢信号归于寂静。撤离船队穿过晨光，五地的灯火沿海岸依次亮起。你守住了所有人重新开始的机会。",
+  "buildings": [
+    "wall",
+    "ballista",
+    "mine",
+    "repair",
+    "anti_air",
+    "mortar",
+    "cannon",
+    "bridge",
+    "frost",
+    "sniper",
+    "amplifier",
+    "crane",
+    "interceptor"
+  ],
+  "enemies": [
+    "grunt",
+    "runner",
+    "bomber",
+    "flyer",
+    "leaper",
+    "blastbeetle",
+    "siege",
+    "marshal",
+    "reflector",
+    "spitter",
+    "bombardier",
+    "suicide_ship",
+    "fortress",
+    "burrow_nest"
+  ],
+  "bossTimes": [
+    240,
+    600,
+    600
+  ],
+  "reliefStart": 480,
+  "reliefEnd": 600
+}

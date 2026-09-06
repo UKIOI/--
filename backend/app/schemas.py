@@ -8,6 +8,7 @@ class Settings(BaseModel):
     reducedMotion: bool = False
     tutorialSeen: bool = False
     campaignCleared: int = Field(0, ge=0, le=5)
+    falseEndingAchievement: bool = False
     layout: Literal["expanded", "classic"] = "expanded"
     background: Literal["city", "harbor", "desert", "snow", "classic"] = "city"
 
@@ -112,8 +113,12 @@ class SalvageCrate(BaseModel):
     falling: bool
 
 class CampaignState(BaseModel):
+    timelineVersion: Literal[2, 3] | None = None
+    revealFrame: int | None = Field(None, ge=0, le=720)
+    carrierCrashed: bool = False
+    storm: bool = False
     stage: int = Field(ge=0, le=4)
-    spawned: int = Field(0, ge=0, le=2)
+    spawned: int = Field(0, ge=0, le=3)
     won: bool = False
 
 class Snapshot(BaseModel):
@@ -144,7 +149,7 @@ class Snapshot(BaseModel):
     bossKills: int = Field(ge=0)
     alive: Literal[True]
     buildings: list[Building] = Field(max_length=572)
-    enemies: list[Enemy] = Field(max_length=182)
+    enemies: list[Enemy] = Field(max_length=183)
     shots: list[Shot] = Field(max_length=2000)
     spawnCredit: Finite = Field(ge=0, lt=1.01)
     bossRequests: int = Field(ge=0, le=1)
@@ -168,16 +173,20 @@ class Snapshot(BaseModel):
         if self.campaign and self.testMode:
             raise ValueError("战役不能同时启用双线测试")
         if self.campaign:
-            from .campaigns import CAMPAIGNS
-            chapter=CAMPAIGNS[self.campaign.stage]
+            from .campaigns import campaign_for
+            chapter=campaign_for(self.campaign.stage,self.campaign.timelineVersion)
             required=len(chapter['bosses'])
+            if self.campaign.revealFrame is not None and (self.campaign.stage!=4 or self.campaign.timelineVersion!=3 or not self.campaign.carrierCrashed):
+                raise ValueError('沉船过场状态非法')
+            if self.campaign.storm and (self.campaign.timelineVersion!=3 or self.campaign.revealFrame!=720):
+                raise ValueError('暴雨阶段尚未开始')
             if self.campaign.spawned>required or any(b.type not in chapter['buildings'] for b in self.buildings):
                 raise ValueError('战役解锁状态非法')
             if any(e.type not in chapter['enemies']+chapter['bosses'] for e in self.enemies):
                 raise ValueError('本关敌人尚未解锁')
             if self.campaign.won and (self.bossKills<required or self.campaign.spawned!=required or any(config['enemies'].get(e.type,{}).get('boss') for e in self.enemies)):
                 raise ValueError('战役尚未完成')
-        if len(self.enemies)>181 and not (self.campaign and self.campaign.stage==4):
+        if len(self.enemies)>180+(len(chapter['bosses']) if self.campaign else 1):
             raise ValueError('敌人数量超限')
         left=self.testMode and self.tick>=36000
         minimum=-20 if left else 0
@@ -202,7 +211,7 @@ class Snapshot(BaseModel):
         for e in self.enemies:
             if (not left and (e.x<0 or e.side=='left')) or e.type not in config['enemies'] or e.hp>e.maxHp:
                 raise ValueError('敌人类型或生命非法')
-        if sum(config['enemies'][e.type]['boss'] for e in self.enemies)>(2 if self.campaign and self.campaign.stage==4 else 1):
+        if sum(config['enemies'][e.type]['boss'] for e in self.enemies)>(len(chapter['bosses']) if self.campaign else 1):
             raise ValueError('Boss 数量非法')
         for k,v in self.perks.items():
             if k not in config['perks'] or v<0 or v>config['perks'][k]['max']:
